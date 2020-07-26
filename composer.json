@@ -19,10 +19,5 @@
         "workerman/http-client": "^0.1.6",
         "phpmailer/phpmailer": "^6.1",
         "firebase/php-jwt": "^5.2"
-    },
-    "autoload": {
-        "psr-4": {
-            "HSK\\": "src"
-        }
     }
 }
