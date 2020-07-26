@@ -765,6 +765,7 @@ class CreateFile
         $str .= "\n\r";
         $str .= "namespace App\Message\\" . $process . ";\n\r";
         $str .= "\n\r";
+        $str .= "use GatewayWorker\Lib\Gateway;\n\r";
         $str .= "\n\r";
         $str .= "class Test\n\r";
         $str .= "{\n\r";
