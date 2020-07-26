@@ -29,9 +29,11 @@ class CreateFile
             if (!is_dir(callback_path() . DS . $process)) {
                 mkdir(callback_path() . DS . $process, 0777, true);
             }
-            $ok = file_put_contents(callback_path() . DS . $process . DS . $file . ".php", self::{$file . $type}($process));
-            if (!$ok) {
-                throw new Exception("Failed to create file");
+            if (!file_exists(callback_path() . DS . $process . DS . $file . ".php")) {
+                $ok = file_put_contents(callback_path() . DS . $process . DS . $file . ".php", self::{$file . $type}($process));
+                if (!$ok) {
+                    throw new Exception("Failed to create file");
+                }
             }
 
             if ($file == 'onWorkerStart') {
@@ -155,9 +157,11 @@ class CreateFile
         $str .= "    }\n\r";
         $str .= "}\n\r";
 
-        $ok = file_put_contents(callback_path() . DS . "Events.php", $str);
-        if (!$ok) {
-            throw new Exception("Failed to create file");
+        if (!file_exists(callback_path() . DS . "Events.php")) {
+            $ok = file_put_contents(callback_path() . DS . "Events.php", $str);
+            if (!$ok) {
+                throw new Exception("Failed to create file");
+            }
         }
     }
 
@@ -745,10 +749,10 @@ class CreateFile
         $str .= "    * @param  [type] \$message_data [description]\n\r";
         $str .= "    * @return [type]               [description]\n\r";
         $str .= "    */\n\r";
-        $str .= "   public static function init (\$connection, \$message_data)\n\r";
-        $str .= "   {\n\r";
-        $str .= "       \$connection->send(json(['type'=>'test']));\n\r";
-        $str .= "   }\n\r";
+        $str .= "    public static function init (\$connection, \$message_data)\n\r";
+        $str .= "    {\n\r";
+        $str .= "        \$connection->send(json(['type'=>'test']));\n\r";
+        $str .= "    }\n\r";
         $str .= "}\n\r";
 
         return $str;
@@ -776,10 +780,10 @@ class CreateFile
         $str .= "    * @param  [type] \$message_data [description]\n\r";
         $str .= "    * @return [type]               [description]\n\r";
         $str .= "    */\n\r";
-        $str .= "   public static function init (\$client_id, \$message_data)\n\r";
-        $str .= "   {\n\r";
-        $str .= "       Gateway::sendToClient(\$client_id, json(['type'=>'test']));\n\r";
-        $str .= "   }\n\r";
+        $str .= "    public static function init (\$client_id, \$message_data)\n\r";
+        $str .= "    {\n\r";
+        $str .= "        Gateway::sendToClient(\$client_id, json(['type'=>'test']));\n\r";
+        $str .= "    }\n\r";
         $str .= "}\n\r";
 
         return $str;
