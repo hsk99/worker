@@ -1,0 +1,25 @@
+{
+    "name": "hsk99/worker",
+    "authors": [
+        {
+            "name": "HSK",
+            "email": "3024186605@qq.com"
+        }
+    ],
+    "require": {
+        "workerman/workerman": "^4.0",
+        "workerman/gateway-worker": "^3.0",
+        "workerman/gatewayclient": "^3.0",
+        "workerman/mysql": "^1.0",
+        "workerman/globaldata": "^1.0",
+        "workerman/channel": "^1.0",
+        "workerman/http-client": "^0.1.6",
+        "phpmailer/phpmailer": "^6.1",
+        "firebase/php-jwt": "^5.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "HSK\\": "src"
+        }
+    }
+}
