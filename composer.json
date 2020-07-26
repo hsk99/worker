@@ -2,6 +2,7 @@
     "name": "hsk99/worker",
     "type": "library",
     "license": "MIT",
+    "minimum-stability": "stable",
     "authors": [
         {
             "name": "HSK",
