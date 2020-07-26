@@ -1,5 +1,7 @@
 {
     "name": "hsk99/worker",
+    "type": "library",
+    "license": "MIT",
     "authors": [
         {
             "name": "HSK",
