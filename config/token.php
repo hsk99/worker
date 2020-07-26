@@ -2,7 +2,7 @@
 
 return [
     // 加密KEY
-    'key'    => 'JKHJHJHJJK&IUYBY&*^!Q*)NSYUG*&!H(UWINB!(*DUIHAHB&*',
+    'key'    => 'HUSHUAIKANG',
     // 签发者
     'iss'    => 'HSK',
     // 默认接收者

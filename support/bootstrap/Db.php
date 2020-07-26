@@ -7,7 +7,6 @@ use \Workerman\MySQL\Connection;
 
 class Db
 {
-
     /**
      * MySql连接信息
      * @var array

@@ -4,15 +4,18 @@ namespace support\bootstrap;
 
 class Config
 {
-
     /**
+     * 记录信息
      * @var array
      */
     protected static $_config = [];
 
     /**
-     * @param $config_path
-     * @param array $exclude_file
+     * @method 记录
+     *  
+     * @param  [type] $config_path  [description]
+     * @param  array  $exclude_file [description]
+     * @return [type]               [description]
      */
     public static function load($config_path, $exclude_file = [])
     {
@@ -27,9 +30,11 @@ class Config
     }
 
     /**
-     * @param null $key
-     * @param null $default
-     * @return array|mixed|null
+     * @method 读取
+     *  
+     * @param  [type] $key     [description]
+     * @param  [type] $default [description]
+     * @return [type]          [description]
      */
     public static function get($key = null, $default = null)
     {
@@ -48,8 +53,11 @@ class Config
     }
 
     /**
-     * @param $config_path
-     * @param array $exclude_file
+     * @method 刷新
+     *  
+     * @param  [type] $config_path  [description]
+     * @param  array  $exclude_file [description]
+     * @return [type]               [description]
      */
     public static function reload($config_path, $exclude_file = [])
     {

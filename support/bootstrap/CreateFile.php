@@ -55,7 +55,7 @@ class CreateFile
     }
 
     /**
-     * @method GatewayWorker 业务处理类
+     * @method 创建 GatewayWorker 业务处理类
      *  
      */
     public static function Events ()
@@ -71,7 +71,7 @@ class CreateFile
         $str .= "     * @var [type]\n\r";
         $str .= "     */\n\r";
         $str .= "    protected static \$worker_name;\n\r";
-        $str .= "\n\r";
+        $str .= "    \n\r";
         $str .= "    /**\n\r";
         $str .= "     * @method 进程启动时触发\n\r";
         $str .= "     *  \n\r";
@@ -86,7 +86,7 @@ class CreateFile
         $str .= "            call_user_func(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onWorkerStart::init\", \$businessWorker);\n\r";
         $str .= "        }\n\r";
         $str .= "    }\n\r";
-        $str .= "\n\r";
+        $str .= "    \n\r";
         $str .= "    /**\n\r";
         $str .= "     * @method 进程退出时触发\n\r";
         $str .= "     *  \n\r";
@@ -99,7 +99,7 @@ class CreateFile
         $str .= "            call_user_func(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onWorkerStop::init\", \$businessWorker);\n\r";
         $str .= "        }\n\r";
         $str .= "    }\n\r";
-        $str .= "\n\r";
+        $str .= "    \n\r";
         $str .= "    /**\n\r";
         $str .= "     * @method 客户端连接成功时触发\n\r";
         $str .= "     *  \n\r";
@@ -112,7 +112,7 @@ class CreateFile
         $str .= "            call_user_func(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onConnect::init\", \$client_id);\n\r";
         $str .= "        }\n\r";
         $str .= "    }\n\r";
-        $str .= "\n\r";
+        $str .= "    \n\r";
         $str .= "    /**\n\r";
         $str .= "     * @method 客户端连接上gateway完成websocket握手时触发\n\r";
         $str .= "     *  \n\r";
@@ -126,7 +126,7 @@ class CreateFile
         $str .= "            call_user_func(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onWebSocketConnect::init\", \$client_id, \$data);\n\r";
         $str .= "        }\n\r";
         $str .= "    }\n\r";
-        $str .= "\n\r";
+        $str .= "    \n\r";
         $str .= "    /**\n\r";
         $str .= "     * @method 客户端发来数据时触发\n\r";
         $str .= "     *  \n\r";
@@ -140,7 +140,7 @@ class CreateFile
         $str .= "            call_user_func(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onMessage::init\", \$client_id, \$message);\n\r";
         $str .= "        }\n\r";
         $str .= "    }\n\r";
-        $str .= "\n\r";         
+        $str .= "    \n\r";         
         $str .= "    /**\n\r";
         $str .= "     * @method 客户端断开连接时触发\n\r";
         $str .= "     *  \n\r";
