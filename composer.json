@@ -2,7 +2,6 @@
     "name": "hsk99/worker",
     "type": "project",
     "license": "MIT",
-    "minimum-stability": "stable",
     "authors": [
         {
             "name": "HSK",
@@ -10,6 +9,7 @@
         }
     ],
     "require": {
+        "php": ">=5.3",
         "workerman/workerman": "^4.0",
         "workerman/gateway-worker": "^3.0",
         "workerman/gatewayclient": "^3.0",
