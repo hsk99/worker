@@ -1,8 +1,8 @@
 {
     "name": "hsk99/worker",
-    "type": "library",
+    "type": "project",
     "license": "MIT",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "HSK",
