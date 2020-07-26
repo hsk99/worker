@@ -2,7 +2,7 @@
 
 namespace support\bootstrap;
 
-use \Exception;
+use Exception;
 
 class CreateFile
 {
@@ -173,8 +173,8 @@ class CreateFile
         $str .= "\n\r";
         $str .= "namespace App\Callback\\" . $process . ";\n\r";
         $str .= "\n\r";
-        $str .= "use \\support\\bootstrap\\Db;\n\r";
-        $str .= "use \\support\\bootstrap\\LoadTimer;\n\r";
+        $str .= "use support\bootstrap\Db;\n\r";
+        $str .= "use support\bootstrap\LoadTimer;\n\r";
         $str .= "\n\r";
         $str .= "class onWorkerStart\n\r";
         $str .= "{\n\r";
@@ -484,8 +484,8 @@ class CreateFile
         $str .= "\n\r";
         $str .= "namespace App\Callback\\" . $process . ";\n\r";
         $str .= "\n\r";
-        $str .= "use \\support\\bootstrap\\Db;\n\r";
-        $str .= "use \\support\\bootstrap\\LoadTimer;\n\r";
+        $str .= "use support\bootstrap\Db;\n\r";
+        $str .= "use support\bootstrap\LoadTimer;\n\r";
         $str .= "\n\r";
         $str .= "class onWorkerStart\n\r";
         $str .= "{\n\r";
@@ -578,7 +578,7 @@ class CreateFile
         $str .= "\n\r";
         $str .= "namespace App\Callback\\" . $process . ";\n\r";
         $str .= "\n\r";
-        $str .= "use \GatewayWorker\Lib\Gateway;\n\r";
+        $str .= "use GatewayWorker\Lib\Gateway;\n\r";
         $str .= "\n\r";
         $str .= "class onMessage\n\r";
         $str .= "{\n\r";

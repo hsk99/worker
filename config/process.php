@@ -21,6 +21,18 @@
  * 'transport'  => 'tcp',
  * 证书信息 (可选，当transport为是ssl时，需要传递证书路径)
  * 'context'    => [], 
+ * 回调
+ * 'callback'   => [
+ *	    'onWorkerStart',
+ *	    'onWorkerReload',
+ *	    'onConnect',
+ *	    'onMessage',
+ *	    'onClose',
+ *	    'onError',
+ *	    'onBufferFull',
+ *	    'onBufferDrain',
+ *	    'onWorkerStop'
+ *	]
  *
  * ******GatewayWorker进程配置参数 (“可选项” 不填写则注释不要留空)******
  * 
@@ -44,6 +56,15 @@
  * "register"       => '127.0.0.1:1300',
  * Business进程数量
  * "business_count" => 1,
+ * 回调
+ * 'callback'   	=> [
+ *	    'onWorkerStart',
+ *	    'onConnect',
+ *	    'onWebSocketConnect',
+ *	    'onMessage',
+ *	    'onClose',
+ *	    'onWorkerStop'
+ *	]
  */
 
 return [

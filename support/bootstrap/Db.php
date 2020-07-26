@@ -2,8 +2,8 @@
 
 namespace support\bootstrap;
 
-use \Exception;
-use \Workerman\MySQL\Connection;
+use Exception;
+use Workerman\MySQL\Connection;
 
 class Db
 {

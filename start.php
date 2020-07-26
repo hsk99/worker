@@ -3,12 +3,12 @@
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/support/helpers.php';
 
-use \Workerman\Worker;
-use \GatewayWorker\Gateway;
-use \GatewayWorker\Register;
-use \GatewayWorker\BusinessWorker;
-use \support\bootstrap\Config;
-use \support\bootstrap\CreateFile;
+use Workerman\Worker;
+use GatewayWorker\Gateway;
+use GatewayWorker\Register;
+use GatewayWorker\BusinessWorker;
+use support\bootstrap\Config;
+use support\bootstrap\CreateFile;
 
 load_files(bootstrap_path());
 load_files(extend_path());

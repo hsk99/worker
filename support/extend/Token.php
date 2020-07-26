@@ -2,11 +2,11 @@
 
 namespace support\extend;
 
-use \Firebase\JWT\JWT;
-use \DomainException;
-use \InvalidArgumentException;
-use \UnexpectedValueException;
-use \DateTime;
+use Firebase\JWT\JWT;
+use DomainException;
+use InvalidArgumentException;
+use UnexpectedValueException;
+use DateTime;
 
 class Token
 {

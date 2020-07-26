@@ -2,8 +2,8 @@
 
 namespace support\extend;
 
-use \PHPMailer\PHPMailer\PHPMailer;
-use \PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 
 class Email
 {

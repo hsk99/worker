@@ -2,7 +2,7 @@
 
 namespace support\bootstrap;
 
-use \Workerman\lib\Timer;
+use Workerman\lib\Timer;
 
 class LoadTimer
 {

@@ -1,7 +1,7 @@
 <?php 
 
-use \support\bootstrap\Config;
-use \Workerman\Protocols\Http\Response;
+use support\bootstrap\Config;
+use Workerman\Protocols\Http\Response;
 
 define('BASE_PATH', realpath(__DIR__ . '/../'));
 define('DS', DIRECTORY_SEPARATOR);
