@@ -61,7 +61,7 @@ if (!empty($process['workerman'])) {
             if (!in_array($name, $config['callback'])) {
                 continue;
             }
-            if (!method_exists("\\App\\Callback\\{$process_name}\\{$name}", "init")) {
+            if (!is_callable("\\App\\Callback\\{$process_name}\\{$name}", "init")) {
                 CreateFile::create("\\App\\Callback\\{$process_name}\\{$name}", "WorkerMan");
             }
             $worker->$name = ["\\App\\Callback\\{$process_name}\\{$name}", "init"];
@@ -70,7 +70,7 @@ if (!empty($process['workerman'])) {
 }
 
 if (!empty($process['gateway_worker'])) {
-    if (!method_exists("\\App\\Callback\\Events", "onWorkerStart")) {
+    if (!is_callable("\\App\\Callback\\Events", "onWorkerStart")) {
         CreateFile::Events();
     }
 
@@ -89,7 +89,7 @@ if (!empty($process['gateway_worker'])) {
             if (!in_array($name, $config['callback'])) {
                 continue;
             }
-            if (!method_exists("\\App\\Callback\\{$process_name}\\{$name}", "init")) {
+            if (!is_callable("\\App\\Callback\\{$process_name}\\{$name}", "init")) {
                 CreateFile::create("\\App\\Callback\\{$process_name}\\{$name}", "GatewayWorker");
             }
         }
