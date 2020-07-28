@@ -145,9 +145,7 @@ if (!empty($process['gateway_worker'])) {
 		$register .= "require_once __DIR__ . '/../support/helpers.php';\n\r";
 		$register .= "\n\r";
 		$register .= "use Workerman\Worker;\n\r";
-		$register .= "use GatewayWorker\Gateway;\n\r";
 		$register .= "use GatewayWorker\Register;\n\r";
-		$register .= "use GatewayWorker\BusinessWorker;\n\r";
 		$register .= "use support\bootstrap\Config;\n\r";
 		$register .= "\n\r";
 		$register .= "load_files(app_path());\n\r";
@@ -162,7 +160,7 @@ if (!empty($process['gateway_worker'])) {
 		$register .= "Worker::\$pidFile    = runtime_path(). '/workerman.pid';\n\r";
 		$register .= "Worker::\$stdoutFile = runtime_path(). '/stdout.log';\n\r";
         $register .= "\n\r";
-        $register .= "\$register       = new Worker(\"text://" . $config['register'] . "\");\n\r";
+        $register .= "\$register       = new Register(\"text://" . $config['register'] . "\");\n\r";
 		$register .= "\$register->name = '$process_name';\n\r";
 		$register .= "\n\r";
 		$register .= "Worker::runAll();\n\r";
@@ -184,8 +182,6 @@ if (!empty($process['gateway_worker'])) {
 		$gateway .= "\n\r";
 		$gateway .= "use Workerman\Worker;\n\r";
 		$gateway .= "use GatewayWorker\Gateway;\n\r";
-		$gateway .= "use GatewayWorker\Register;\n\r";
-		$gateway .= "use GatewayWorker\BusinessWorker;\n\r";
 		$gateway .= "use support\bootstrap\Config;\n\r";
 		$gateway .= "\n\r";
 		$gateway .= "load_files(app_path());\n\r";
@@ -228,8 +224,6 @@ if (!empty($process['gateway_worker'])) {
 		$bussiness .= "require_once __DIR__ . '/../support/helpers.php';\n\r";
 		$bussiness .= "\n\r";
 		$bussiness .= "use Workerman\Worker;\n\r";
-		$bussiness .= "use GatewayWorker\Gateway;\n\r";
-		$bussiness .= "use GatewayWorker\Register;\n\r";
 		$bussiness .= "use GatewayWorker\BusinessWorker;\n\r";
 		$bussiness .= "use support\bootstrap\Config;\n\r";
 		$bussiness .= "\n\r";
