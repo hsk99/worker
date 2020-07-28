@@ -1,15 +1,27 @@
 <?php 
 
+ini_set('display_errors', 'on');
+
+if (strpos(strtolower(PHP_OS), 'win') === 0) {
+    exit("start.php not support windows\n");
+}
+
+date_default_timezone_set('Asia/Shanghai');
+
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/support/helpers.php';
 
 use Workerman\Worker;
+use Workerman\Connection\TcpConnection;
 use GatewayWorker\Gateway;
 use GatewayWorker\Register;
 use GatewayWorker\BusinessWorker;
 use support\bootstrap\Config;
 use support\bootstrap\CreateFile;
 
+if (is_dir(app_path())) {
+    load_files(app_path());
+}
 load_files(bootstrap_path());
 load_files(extend_path());
 Config::load(config_path());
@@ -17,9 +29,10 @@ Config::load(config_path());
 if (!is_dir(runtime_path())) {
     mkdir(runtime_path(), 0777, true);
 }
-\Workerman\Worker::$logFile    = runtime_path(). '/workerman.log';
-\Workerman\Worker::$pidFile    = runtime_path(). '/workerman.pid';
-\Workerman\Worker::$stdoutFile = runtime_path(). '/stdout.log';
+Worker::$logFile                      = runtime_path(). '/workerman.log';
+Worker::$pidFile                      = runtime_path(). '/workerman.pid';
+Worker::$stdoutFile                   = runtime_path(). '/stdout.log';
+TcpConnection::$defaultMaxPackageSize = 10*1024*1024;
 
 $process = config('process', []);
 
@@ -61,7 +74,7 @@ if (!empty($process['workerman'])) {
             if (!in_array($name, $config['callback'])) {
                 continue;
             }
-            if (!is_callable("\\App\\Callback\\{$process_name}\\{$name}", "init")) {
+            if (!method_exists("\\App\\Callback\\{$process_name}\\{$name}", "init")) {
                 CreateFile::create("\\App\\Callback\\{$process_name}\\{$name}", "WorkerMan");
             }
             $worker->$name = ["\\App\\Callback\\{$process_name}\\{$name}", "init"];
@@ -70,7 +83,7 @@ if (!empty($process['workerman'])) {
 }
 
 if (!empty($process['gateway_worker'])) {
-    if (!is_callable("\\App\\Callback\\Events", "onWorkerStart")) {
+    if (!method_exists("\\App\\Callback\\Events", "onWorkerStart")) {
         CreateFile::Events();
     }
 
@@ -89,7 +102,7 @@ if (!empty($process['gateway_worker'])) {
             if (!in_array($name, $config['callback'])) {
                 continue;
             }
-            if (!is_callable("\\App\\Callback\\{$process_name}\\{$name}", "init")) {
+            if (!method_exists("\\App\\Callback\\{$process_name}\\{$name}", "init")) {
                 CreateFile::create("\\App\\Callback\\{$process_name}\\{$name}", "GatewayWorker");
             }
         }

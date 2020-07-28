@@ -220,6 +220,36 @@ function set_time($time)
 }
 
 /**
+ * @method 循环删除目录和文件
+ *
+ * @param  [type]          $dir_name [description]
+ * @return [type]                    [description]
+ */
+function delete_dir_file ($dir_name)
+{
+    $result = false;
+    if (is_dir($dir_name)) {
+        if ($handle = opendir($dir_name)) {
+            while (false !== ($item = readdir($handle))) {
+                if ($item != '.' && $item != '..') {
+                    if (is_dir($dir_name . DS . $item)) {
+                        delete_dir_file($dir_name . DS . $item);
+                    } else {
+                        unlink($dir_name . DS . $item);
+                    }
+                }
+            }
+            closedir($handle);
+            if (rmdir($dir_name)) {
+                $result = true;
+            }
+        }
+    }
+
+    return $result;
+}
+
+/**
  * @method 返回API格式数据
  *
  * @param  array   $data [description]

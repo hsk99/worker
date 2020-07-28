@@ -54,6 +54,8 @@ class CreateFile
                 }
             }
         }
+
+        load_files(app_path());
     }
 
     /**
@@ -163,6 +165,8 @@ class CreateFile
                 throw new Exception("Failed to create file");
             }
         }
+
+        load_files(app_path());
     }
 
     /**
