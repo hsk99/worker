@@ -24,7 +24,7 @@ class Push
      * @param  string $data [description]
      * @return [type]       [description]
      */
-    public static function send ($data = '', $type = '', $value = '')
+    public static function send ($data = '', $type = 'all', $value = '')
     {
         if (!empty(self::$register)) {
             self::register($data, $type, $value);
@@ -43,7 +43,7 @@ class Push
      * @param  string   $value [description]
      * @return [type]          [description]
      */
-    protected static function register ($data = '', $type = '', $value = '')
+    protected static function register ($data = '', $type = 'all', $value = '')
     {
         try {
             Gateway::$registerAddress  = self::$register;
