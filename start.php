@@ -89,7 +89,7 @@ if (!empty($process['gateway_worker'])) {
 
     foreach ($process['gateway_worker'] as $process_name => $config) {
         $process_name = parse_name($process_name, 1);
-
+        
         $callback_map = [
             'onWorkerStart',
             'onConnect',
@@ -123,6 +123,33 @@ if (!empty($process['gateway_worker'])) {
         $bussiness->count           = $config['business_count'];
         $bussiness->registerAddress = $config['register'];
         $bussiness->eventHandler    = '\\App\\Callback\\Events';
+
+        if (!defined($process_name . "Register")) {
+            define($process_name . "Register", $config['register']);
+        }
+    }
+}
+
+if (!empty($process['global_data'])) {
+    foreach ($process['global_data'] as $process_name => $config) {
+        new GlobalData\Server($config['listen_ip'], $config['listen_port']);
+
+        if (!defined("GlobalData" . $process_name)) {
+            define("GlobalData" . $process_name, $config['listen_ip'] . ":" . $config['listen_port']);
+        }
+    }
+}
+
+if (!empty($process['channel'])) {
+    foreach ($process['channel'] as $process_name => $config) {
+        new Channel\Server($config['listen_ip'], $config['listen_port']);
+
+        if (!defined("Channel" . $process_name . "Ip")) {
+            define("Channel" . $process_name . "Ip", $config['listen_ip']);
+        }     
+        if (!defined("Channel" . $process_name . "Port")) {
+            define("Channel" . $process_name . "Port", $config['listen_port']);
+        } 
     }
 }
 

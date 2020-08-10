@@ -25,6 +25,68 @@ if (count($worker_names) != count(array_unique($worker_names))) {
    exit("There are duplicates in the process names of WorkerMan and GatewayWorker");
 }
 
+
+$str = "<?php \n\r";
+$str .= "\n\r";
+$str .= "ini_set('display_errors', 'on');\n\r";
+$str .= "\n\r";
+$str .= "date_default_timezone_set('Asia/Shanghai');\n\r";
+$str .= "\n\r";
+$str .= "require_once __DIR__ . '/../vendor/autoload.php';\n\r";
+$str .= "require_once __DIR__ . '/../support/helpers.php';\n\r";
+$str .= "\n\r";
+$str .= "use Workerman\Worker;\n\r";
+$str .= "use support\bootstrap\Config;\n\r";
+$str .= "\n\r";
+$str .= "load_files(app_path());\n\r";
+$str .= "load_files(bootstrap_path());\n\r";
+$str .= "load_files(extend_path());\n\r";
+$str .= "Config::load(config_path());\n\r";
+$str .= "\n\r";
+$str .= "if (!is_dir(runtime_path())) {\n\r";
+$str .= "    mkdir(runtime_path(), 0777, true);\n\r";
+$str .= "}\n\r";
+$str .= "Worker::\$logFile                      = runtime_path(). '/workerman.log';\n\r";
+$str .= "Worker::\$pidFile                      = runtime_path(). '/workerman.pid';\n\r";
+$str .= "Worker::\$stdoutFile                   = runtime_path(). '/stdout.log';\n\r";
+$str .= "\n\r";
+if (!empty($process['gateway_worker'])) {
+	foreach ($process['gateway_worker'] as $process_name => $config) {
+        $process_name = parse_name($process_name, 1);
+        $str .= "if (!defined('{$process_name}Register')) {\n\r";
+		$str .= "    define('{$process_name}Register', '{$config['register']}');\n\r";
+		$str .= "}\n\r";
+		$str .= "\n\r";
+    }
+}
+if (!empty($process['global_data'])) {
+	foreach ($process['global_data'] as $process_name => $config) {
+        $process_name = parse_name($process_name, 1);
+        $str .= "if (!defined('GlobalData{$process_name}')) {\n\r";
+		$str .= "    define('GlobalData{$process_name}', '{$config['listen_ip']}:{$config['listen_port']}');\n\r";
+		$str .= "}\n\r";
+		$str .= "\n\r";
+    }
+}
+if (!empty($process['channel'])) {
+	foreach ($process['channel'] as $process_name => $config) {
+        $process_name = parse_name($process_name, 1);
+        $str .= "if (!defined('Channel{$process_name}Ip')) {\n\r";
+		$str .= "    define('Channel{$process_name}Ip', '{$config['listen_ip']}');\n\r";
+		$str .= "}\n\r";
+		$str .= "\n\r";
+		$str .= "if (!defined('Channel{$process_name}Port')) {\n\r";
+		$str .= "    define('Channel{$process_name}Port', '{$config['listen_port']}');\n\r";
+		$str .= "}\n\r";
+		$str .= "\n\r";
+    }
+}
+
+$ok = file_put_contents(base_path() . DS . 'win' . DS . "loader.php", $str);
+if (!$ok) {
+    exit("Failed to create file");
+}
+
 $bat = "CHCP 65001\n\rphp";
 
 if (!empty($process['workerman'])) {
@@ -34,28 +96,11 @@ if (!empty($process['workerman'])) {
 
         $str = "<?php \n\r";
         $str .= "\n\r";
-        $str .= "ini_set('display_errors', 'on');\n\r";
-		$str .= "\n\r";
-		$str .= "date_default_timezone_set('Asia/Shanghai');\n\r";
-		$str .= "\n\r";
-		$str .= "require_once __DIR__ . '/../vendor/autoload.php';\n\r";
-		$str .= "require_once __DIR__ . '/../support/helpers.php';\n\r";
+		$str .= "require_once __DIR__ . '/loader.php';\n\r";
 		$str .= "\n\r";
 		$str .= "use Workerman\Worker;\n\r";
 		$str .= "use Workerman\Connection\TcpConnection;\n\r";
-		$str .= "use support\bootstrap\Config;\n\r";
 		$str .= "\n\r";
-		$str .= "load_files(app_path());\n\r";
-		$str .= "load_files(bootstrap_path());\n\r";
-		$str .= "load_files(extend_path());\n\r";
-		$str .= "Config::load(config_path());\n\r";
-		$str .= "\n\r";
-		$str .= "if (!is_dir(runtime_path())) {\n\r";
-		$str .= "    mkdir(runtime_path(), 0777, true);\n\r";
-		$str .= "}\n\r";
-		$str .= "Worker::\$logFile                      = runtime_path(). '/workerman.log';\n\r";
-		$str .= "Worker::\$pidFile                      = runtime_path(). '/workerman.pid';\n\r";
-		$str .= "Worker::\$stdoutFile                   = runtime_path(). '/stdout.log';\n\r";
 		$str .= "TcpConnection::\$defaultMaxPackageSize = 10*1024*1024;\n\r";
         $str .= "\n\r";
         $str .= "\$worker                 = new Worker(\"" . $listen . "\");\n\r";
@@ -137,28 +182,10 @@ if (!empty($process['gateway_worker'])) {
 
         $register = "<?php \n\r";
         $register .= "\n\r";
-        $register .= "ini_set('display_errors', 'on');\n\r";
-		$register .= "\n\r";
-		$register .= "date_default_timezone_set('Asia/Shanghai');\n\r";
-		$register .= "\n\r";
-		$register .= "require_once __DIR__ . '/../vendor/autoload.php';\n\r";
-		$register .= "require_once __DIR__ . '/../support/helpers.php';\n\r";
+		$register .= "require_once __DIR__ . '/loader.php';\n\r";
 		$register .= "\n\r";
 		$register .= "use Workerman\Worker;\n\r";
 		$register .= "use GatewayWorker\Register;\n\r";
-		$register .= "use support\bootstrap\Config;\n\r";
-		$register .= "\n\r";
-		$register .= "load_files(app_path());\n\r";
-		$register .= "load_files(bootstrap_path());\n\r";
-		$register .= "load_files(extend_path());\n\r";
-		$register .= "Config::load(config_path());\n\r";
-		$register .= "\n\r";
-		$register .= "if (!is_dir(runtime_path())) {\n\r";
-		$register .= "    mkdir(runtime_path(), 0777, true);\n\r";
-		$register .= "}\n\r";
-		$register .= "Worker::\$logFile    = runtime_path(). '/workerman.log';\n\r";
-		$register .= "Worker::\$pidFile    = runtime_path(). '/workerman.pid';\n\r";
-		$register .= "Worker::\$stdoutFile = runtime_path(). '/stdout.log';\n\r";
         $register .= "\n\r";
         $register .= "\$register       = new Register(\"text://" . $config['register'] . "\");\n\r";
 		$register .= "\$register->name = '$process_name';\n\r";
@@ -173,28 +200,10 @@ if (!empty($process['gateway_worker'])) {
 
 		$gateway = "<?php \n\r";
 		$gateway .= "\n\r";
-        $gateway .= "ini_set('display_errors', 'on');\n\r";
-		$gateway .= "\n\r";
-		$gateway .= "date_default_timezone_set('Asia/Shanghai');\n\r";
-		$gateway .= "\n\r";
-		$gateway .= "require_once __DIR__ . '/../vendor/autoload.php';\n\r";
-		$gateway .= "require_once __DIR__ . '/../support/helpers.php';\n\r";
+		$gateway .= "require_once __DIR__ . '/loader.php';\n\r";
 		$gateway .= "\n\r";
 		$gateway .= "use Workerman\Worker;\n\r";
 		$gateway .= "use GatewayWorker\Gateway;\n\r";
-		$gateway .= "use support\bootstrap\Config;\n\r";
-		$gateway .= "\n\r";
-		$gateway .= "load_files(app_path());\n\r";
-		$gateway .= "load_files(bootstrap_path());\n\r";
-		$gateway .= "load_files(extend_path());\n\r";
-		$gateway .= "Config::load(config_path());\n\r";
-		$gateway .= "\n\r";
-		$gateway .= "if (!is_dir(runtime_path())) {\n\r";
-		$gateway .= "    mkdir(runtime_path(), 0777, true);\n\r";
-		$gateway .= "}\n\r";
-		$gateway .= "Worker::\$logFile    = runtime_path(). '/workerman.log';\n\r";
-		$gateway .= "Worker::\$pidFile    = runtime_path(). '/workerman.pid';\n\r";
-		$gateway .= "Worker::\$stdoutFile = runtime_path(). '/stdout.log';\n\r";
         $gateway .= "\n\r";
 		$gateway .= "\$gateway                  = new Gateway(\"" . $listen . "\");\n\r";
 		$gateway .= "\$gateway->transport       = '$transport';\n\r";
@@ -216,28 +225,10 @@ if (!empty($process['gateway_worker'])) {
 
 		$bussiness = "<?php \n\r";
 		$bussiness .= "\n\r";
-        $bussiness .= "ini_set('display_errors', 'on');\n\r";
-		$bussiness .= "\n\r";
-		$bussiness .= "date_default_timezone_set('Asia/Shanghai');\n\r";
-		$bussiness .= "\n\r";
-		$bussiness .= "require_once __DIR__ . '/../vendor/autoload.php';\n\r";
-		$bussiness .= "require_once __DIR__ . '/../support/helpers.php';\n\r";
+		$bussiness .= "require_once __DIR__ . '/loader.php';\n\r";
 		$bussiness .= "\n\r";
 		$bussiness .= "use Workerman\Worker;\n\r";
 		$bussiness .= "use GatewayWorker\BusinessWorker;\n\r";
-		$bussiness .= "use support\bootstrap\Config;\n\r";
-		$bussiness .= "\n\r";
-		$bussiness .= "load_files(app_path());\n\r";
-		$bussiness .= "load_files(bootstrap_path());\n\r";
-		$bussiness .= "load_files(extend_path());\n\r";
-		$bussiness .= "Config::load(config_path());\n\r";
-		$bussiness .= "\n\r";
-		$bussiness .= "if (!is_dir(runtime_path())) {\n\r";
-		$bussiness .= "    mkdir(runtime_path(), 0777, true);\n\r";
-		$bussiness .= "}\n\r";
-		$bussiness .= "Worker::\$logFile    = runtime_path(). '/workerman.log';\n\r";
-		$bussiness .= "Worker::\$pidFile    = runtime_path(). '/workerman.pid';\n\r";
-		$bussiness .= "Worker::\$stdoutFile = runtime_path(). '/stdout.log';\n\r";
         $bussiness .= "\n\r";
 		$bussiness .= "\$bussiness                  = new BusinessWorker();\n\r";
 		$bussiness .= "\$bussiness->name            = '$process_name';\n\r";
@@ -252,6 +243,52 @@ if (!empty($process['gateway_worker'])) {
             exit("Failed to create file");
         }
         $bat .= " " . 'win' . DS . $process_name . "Bussiness.php";
+    }
+}
+
+if (!empty($process['global_data'])) {
+    foreach ($process['global_data'] as $process_name => $config) {
+		$process_name = parse_name($process_name, 1);
+
+        $str = "<?php \n\r";
+        $str .= "\n\r";
+		$str .= "require_once __DIR__ . '/loader.php';\n\r";
+		$str .= "\n\r";
+		$str .= "use Workerman\Worker;\n\r";
+        $str .= "\n\r";
+        $str .= "new GlobalData\Server('" . $config['listen_ip'] . "', {$config['listen_port']});\n\r";
+        $str .= "\n\r";
+		$str .= "Worker::runAll();\n\r";
+        
+        
+        $ok = file_put_contents(base_path() . DS . 'win' . DS . "GlobalData" . $process_name . ".php", $str);
+        if (!$ok) {
+            exit("Failed to create file");
+        }
+        $bat .= " " . 'win' . DS . "GlobalData" . $process_name . ".php";
+    }
+}
+
+if (!empty($process['channel'])) {
+    foreach ($process['channel'] as $process_name => $config) {
+		$process_name = parse_name($process_name, 1);
+
+        $str = "<?php \n\r";
+        $str .= "\n\r";
+		$str .= "require_once __DIR__ . '/loader.php';\n\r";
+		$str .= "\n\r";
+		$str .= "use Workerman\Worker;\n\r";
+        $str .= "\n\r";
+        $str .= "new Channel\Server('" . $config['listen_ip'] . "', {$config['listen_port']});\n\r";
+        $str .= "\n\r";
+		$str .= "Worker::runAll();\n\r";
+        
+        
+        $ok = file_put_contents(base_path() . DS . 'win' . DS . "Channel" . $process_name . ".php", $str);
+        if (!$ok) {
+            exit("Failed to create file");
+        }
+        $bat .= " " . 'win' . DS . "Channel" . $process_name . ".php";
     }
 }
 
