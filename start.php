@@ -132,6 +132,8 @@ if (!empty($process['gateway_worker'])) {
 
 if (!empty($process['global_data'])) {
     foreach ($process['global_data'] as $process_name => $config) {
+        $process_name = parse_name($process_name, 1);
+
         new GlobalData\Server($config['listen_ip'], $config['listen_port']);
 
         if (!defined("GlobalData" . $process_name)) {
@@ -142,6 +144,8 @@ if (!empty($process['global_data'])) {
 
 if (!empty($process['channel'])) {
     foreach ($process['channel'] as $process_name => $config) {
+        $process_name = parse_name($process_name, 1);
+
         new Channel\Server($config['listen_ip'], $config['listen_port']);
 
         if (!defined("Channel" . $process_name . "Ip")) {
@@ -149,7 +153,7 @@ if (!empty($process['channel'])) {
         }     
         if (!defined("Channel" . $process_name . "Port")) {
             define("Channel" . $process_name . "Port", $config['listen_port']);
-        } 
+        }   
     }
 }
 
