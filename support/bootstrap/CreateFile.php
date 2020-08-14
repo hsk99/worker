@@ -286,7 +286,7 @@ class CreateFile
         $str .= "     */\n\r";
         $str .= "    public static function init (\$connection, \$message)\n\r";
         $str .= "    {\n\r";
-        $str .= "        if (\$connection->worker->protocol == \"\\Workerman\\Protocols\\Http\") {\n\r";
+        $str .= "        if (in_array(\$connection->worker->protocol, [\"\\Workerman\\Protocols\\Http\", \"Workerman\\Protocols\\Http\"]))  {\n\r";
         $str .= "            \$url = \$message->path();\n\r";
         $str .= "        \n\r";
         $str .= "            if (strpos(\$url, '/') === 0) {\n\r";
