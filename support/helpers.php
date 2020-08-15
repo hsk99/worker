@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 use support\bootstrap\Config;
 
@@ -101,19 +101,17 @@ function runtime_path()
  * @param  string $path [description]
  * @return [type]       [description]
  */
-function load_files ($path = '')
+function load_files($path = '')
 {
-    if (empty($path)) {
+    if (empty($path) || !is_dir($path)) {
         return;
     }
 
     $dir          = realpath($path);
     $dir_iterator = new RecursiveDirectoryIterator($dir);
     $iterator     = new RecursiveIteratorIterator($dir_iterator);
-    foreach ($iterator as $file)
-    {
-        if(pathinfo($file, PATHINFO_EXTENSION) == 'php')
-        {
+    foreach ($iterator as $file) {
+        if (pathinfo($file, PATHINFO_EXTENSION) == 'php') {
             if (!in_array($file->getPathName(), get_included_files())) {
                 include $file->getPathName();
             }
@@ -127,9 +125,9 @@ function load_files ($path = '')
  * @param  [type] $data [description]
  * @return [type]       [description]
  */
-function json ($data)
+function json($data)
 {
-	return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 }
 
 /**
@@ -161,7 +159,7 @@ function parse_name($name, $type = 0, $ucfirst = true)
  * @param  [type] $default [description]
  * @return [type]          [description]
  */
-function config ($key = null, $default = null)
+function config($key = null, $default = null)
 {
     return Config::get($key, $default);
 }
@@ -172,7 +170,7 @@ function config ($key = null, $default = null)
  * @param  [type]          $dir_name [description]
  * @return [type]                    [description]
  */
-function delete_dir_file ($dir_name)
+function delete_dir_file($dir_name)
 {
     $result = false;
     if (is_dir($dir_name)) {
@@ -194,4 +192,20 @@ function delete_dir_file ($dir_name)
     }
 
     return $result;
+}
+
+/**
+ * @method 获取CPU个数
+ *  
+ * @return [type]    [description]
+ */
+function cpu_count()
+{
+    if (strtolower(PHP_OS) === 'darwin') {
+        $count = shell_exec('sysctl -n machdep.cpu.core_count');
+    } else {
+        $count = shell_exec('nproc');
+    }
+    $count = (int)$count > 0 ? (int)$count : 4;
+    return $count;
 }

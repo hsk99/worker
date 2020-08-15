@@ -13,7 +13,7 @@ class CreateFile
      * @param  string $type      [description]
      * @return [type]            [description]
      */
-    public static function create ($namespace = '', $type = '')
+    public static function create($namespace = '', $type = '')
     {
         if (empty($namespace) || empty($type)) {
             throw new Exception("File creation, parameter error");
@@ -62,102 +62,102 @@ class CreateFile
      * @method 创建 GatewayWorker 业务处理类
      *  
      */
-    public static function Events ()
+    public static function Events()
     {
-        $str = "<?php\n\r";
-        $str .= "\n\r";
-        $str .= "namespace App\Callback;\n\r";
-        $str .= "\n\r";
-        $str .= "class Events\n\r";
-        $str .= "{\n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * 进程名称\n\r";
-        $str .= "     * @var [type]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    protected static \$worker_name;\n\r";
-        $str .= "    \n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * @method 进程启动时触发\n\r";
-        $str .= "     *  \n\r";
-        $str .= "     * @param  [type]        \$businessWorker [description]\n\r";
-        $str .= "     * @return [type]                        [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function onWorkerStart (\$businessWorker)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        self::\$worker_name = parse_name(\$businessWorker->name, 1);\n\r";
-        $str .= "        \n\r";
-        $str .= "        if (is_callable(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onWorkerStart::init\")) {\n\r";
-        $str .= "            call_user_func(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onWorkerStart::init\", \$businessWorker);\n\r";
-        $str .= "        }\n\r";
-        $str .= "    }\n\r";
-        $str .= "    \n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * @method 进程退出时触发\n\r";
-        $str .= "     *  \n\r";
-        $str .= "     * @param  [type]       \$businessWorker [description]\n\r";
-        $str .= "     * @return [type]                       [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function onWorkerStop (\$businessWorker)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        if (is_callable(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onWorkerStop::init\")) {\n\r";
-        $str .= "            call_user_func(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onWorkerStop::init\", \$businessWorker);\n\r";
-        $str .= "        }\n\r";
-        $str .= "    }\n\r";
-        $str .= "    \n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * @method 客户端连接成功时触发\n\r";
-        $str .= "     *  \n\r";
-        $str .= "     * @param  [type]    \$client_id [description]\n\r";
-        $str .= "     * @return [type]               [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function onConnect (\$client_id)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        if (is_callable(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onConnect::init\")) {\n\r";
-        $str .= "            call_user_func(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onConnect::init\", \$client_id);\n\r";
-        $str .= "        }\n\r";
-        $str .= "    }\n\r";
-        $str .= "    \n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * @method 客户端连接上gateway完成websocket握手时触发\n\r";
-        $str .= "     *  \n\r";
-        $str .= "     * @param  [type]             \$client_id [description]\n\r";
-        $str .= "     * @param  [type]             \$data      [description]\n\r";
-        $str .= "     * @return [type]                        [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function onWebSocketConnect (\$client_id, \$data)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        if (is_callable(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onWebSocketConnect::init\")) {\n\r";
-        $str .= "            call_user_func(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onWebSocketConnect::init\", \$client_id, \$data);\n\r";
-        $str .= "        }\n\r";
-        $str .= "    }\n\r";
-        $str .= "    \n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * @method 客户端发来数据时触发\n\r";
-        $str .= "     *  \n\r";
-        $str .= "     * @param  [type]    \$client_id [description]\n\r";
-        $str .= "     * @param  [type]    \$message   [description]\n\r";
-        $str .= "     * @return [type]               [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function onMessage (\$client_id, \$message)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        if (is_callable(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onMessage::init\")) {\n\r";
-        $str .= "            call_user_func(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onMessage::init\", \$client_id, \$message);\n\r";
-        $str .= "        }\n\r";
-        $str .= "    }\n\r";
-        $str .= "    \n\r";         
-        $str .= "    /**\n\r";
-        $str .= "     * @method 客户端断开连接时触发\n\r";
-        $str .= "     *  \n\r";
-        $str .= "     * @param  [type]  \$client_id [description]\n\r";
-        $str .= "     * @return [type]             [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function onClose (\$client_id)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        if (is_callable(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onClose::init\")) {\n\r";
-        $str .= "            call_user_func(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onClose::init\", \$client_id);\n\r";
-        $str .= "        }\n\r";
-        $str .= "    }\n\r";
-        $str .= "}\n\r";
+        $str = "<?php\n";
+        $str .= "\n";
+        $str .= "namespace App\Callback;\n";
+        $str .= "\n";
+        $str .= "class Events\n";
+        $str .= "{\n";
+        $str .= "    /**\n";
+        $str .= "     * 进程名称\n";
+        $str .= "     * @var [type]\n";
+        $str .= "     */\n";
+        $str .= "    protected static \$worker_name;\n";
+        $str .= "    \n";
+        $str .= "    /**\n";
+        $str .= "     * @method 进程启动时触发\n";
+        $str .= "     *  \n";
+        $str .= "     * @param  [type]        \$businessWorker [description]\n";
+        $str .= "     * @return [type]                        [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function onWorkerStart (\$businessWorker)\n";
+        $str .= "    {\n";
+        $str .= "        self::\$worker_name = parse_name(\$businessWorker->name, 1);\n";
+        $str .= "        \n";
+        $str .= "        if (is_callable(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onWorkerStart::init\")) {\n";
+        $str .= "            call_user_func(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onWorkerStart::init\", \$businessWorker);\n";
+        $str .= "        }\n";
+        $str .= "    }\n";
+        $str .= "    \n";
+        $str .= "    /**\n";
+        $str .= "     * @method 进程退出时触发\n";
+        $str .= "     *  \n";
+        $str .= "     * @param  [type]       \$businessWorker [description]\n";
+        $str .= "     * @return [type]                       [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function onWorkerStop (\$businessWorker)\n";
+        $str .= "    {\n";
+        $str .= "        if (is_callable(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onWorkerStop::init\")) {\n";
+        $str .= "            call_user_func(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onWorkerStop::init\", \$businessWorker);\n";
+        $str .= "        }\n";
+        $str .= "    }\n";
+        $str .= "    \n";
+        $str .= "    /**\n";
+        $str .= "     * @method 客户端连接成功时触发\n";
+        $str .= "     *  \n";
+        $str .= "     * @param  [type]    \$client_id [description]\n";
+        $str .= "     * @return [type]               [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function onConnect (\$client_id)\n";
+        $str .= "    {\n";
+        $str .= "        if (is_callable(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onConnect::init\")) {\n";
+        $str .= "            call_user_func(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onConnect::init\", \$client_id);\n";
+        $str .= "        }\n";
+        $str .= "    }\n";
+        $str .= "    \n";
+        $str .= "    /**\n";
+        $str .= "     * @method 客户端连接上gateway完成websocket握手时触发\n";
+        $str .= "     *  \n";
+        $str .= "     * @param  [type]             \$client_id [description]\n";
+        $str .= "     * @param  [type]             \$data      [description]\n";
+        $str .= "     * @return [type]                        [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function onWebSocketConnect (\$client_id, \$data)\n";
+        $str .= "    {\n";
+        $str .= "        if (is_callable(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onWebSocketConnect::init\")) {\n";
+        $str .= "            call_user_func(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onWebSocketConnect::init\", \$client_id, \$data);\n";
+        $str .= "        }\n";
+        $str .= "    }\n";
+        $str .= "    \n";
+        $str .= "    /**\n";
+        $str .= "     * @method 客户端发来数据时触发\n";
+        $str .= "     *  \n";
+        $str .= "     * @param  [type]    \$client_id [description]\n";
+        $str .= "     * @param  [type]    \$message   [description]\n";
+        $str .= "     * @return [type]               [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function onMessage (\$client_id, \$message)\n";
+        $str .= "    {\n";
+        $str .= "        if (is_callable(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onMessage::init\")) {\n";
+        $str .= "            call_user_func(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onMessage::init\", \$client_id, \$message);\n";
+        $str .= "        }\n";
+        $str .= "    }\n";
+        $str .= "    \n";
+        $str .= "    /**\n";
+        $str .= "     * @method 客户端断开连接时触发\n";
+        $str .= "     *  \n";
+        $str .= "     * @param  [type]  \$client_id [description]\n";
+        $str .= "     * @return [type]             [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function onClose (\$client_id)\n";
+        $str .= "    {\n";
+        $str .= "        if (is_callable(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onClose::init\")) {\n";
+        $str .= "            call_user_func(\"\\\App\\\Callback\\\\\" . self::\$worker_name . \"\\\onClose::init\", \$client_id);\n";
+        $str .= "        }\n";
+        $str .= "    }\n";
+        $str .= "}\n";
 
         if (!file_exists(callback_path() . DS . "Events.php")) {
             $ok = file_put_contents(callback_path() . DS . "Events.php", $str);
@@ -175,29 +175,29 @@ class CreateFile
      * @param  [type]  $process [description]
      * @return [type]           [description]
      */
-    protected static function onWorkerStartWorkerMan ($process)
+    protected static function onWorkerStartWorkerMan($process)
     {
-        $str = "<?php\n\r";
-        $str .= "\n\r";
-        $str .= "namespace App\Callback\\" . $process . ";\n\r";
-        $str .= "\n\r";
-        $str .= "use support\bootstrap\Db;\n\r";
-        $str .= "use support\bootstrap\LoadTimer;\n\r";
-        $str .= "\n\r";
-        $str .= "class onWorkerStart\n\r";
-        $str .= "{\n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * @method 初始化\n\r";
-        $str .= "     *  \n\r";
-        $str .= "     * @param  [type] \$worker     [description]\n\r";
-        $str .= "     * @return [type]             [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function init (\$worker)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        Db::connect();\n\r";
-        $str .= "        LoadTimer::load(\$worker);\n\r";
-        $str .= "    }\n\r";
-        $str .= "}\n\r";
+        $str = "<?php\n";
+        $str .= "\n";
+        $str .= "namespace App\Callback\\" . $process . ";\n";
+        $str .= "\n";
+        $str .= "use support\bootstrap\Db;\n";
+        $str .= "use support\bootstrap\LoadTimer;\n";
+        $str .= "\n";
+        $str .= "class onWorkerStart\n";
+        $str .= "{\n";
+        $str .= "    /**\n";
+        $str .= "     * @method 初始化\n";
+        $str .= "     *  \n";
+        $str .= "     * @param  [type] \$worker     [description]\n";
+        $str .= "     * @return [type]             [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function init (\$worker)\n";
+        $str .= "    {\n";
+        $str .= "        Db::connect();\n";
+        $str .= "        LoadTimer::load(\$worker);\n";
+        $str .= "    }\n";
+        $str .= "}\n";
 
         return $str;
     }
@@ -208,26 +208,26 @@ class CreateFile
      * @param  [type]  $process [description]
      * @return [type]           [description]
      */
-    protected static function onWorkerReloadWorkerMan ($process)
+    protected static function onWorkerReloadWorkerMan($process)
     {
-        $str = "<?php\n\r";
-        $str .= "\n\r";
-        $str .= "namespace App\Callback\\" . $process . ";\n\r";
-        $str .= "\n\r";
-        $str .= "\n\r";
-        $str .= "class onWorkerReload\n\r";
-        $str .= "{\n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * @method 初始化\n\r";
-        $str .= "     *  \n\r";
-        $str .= "     * @param  [type] \$worker     [description]\n\r";
-        $str .= "     * @return [type]             [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function init (\$worker)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        \n\r";
-        $str .= "    }\n\r";
-        $str .= "}\n\r";
+        $str = "<?php\n";
+        $str .= "\n";
+        $str .= "namespace App\Callback\\" . $process . ";\n";
+        $str .= "\n";
+        $str .= "\n";
+        $str .= "class onWorkerReload\n";
+        $str .= "{\n";
+        $str .= "    /**\n";
+        $str .= "     * @method 初始化\n";
+        $str .= "     *  \n";
+        $str .= "     * @param  [type] \$worker     [description]\n";
+        $str .= "     * @return [type]             [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function init (\$worker)\n";
+        $str .= "    {\n";
+        $str .= "        \n";
+        $str .= "    }\n";
+        $str .= "}\n";
 
         return $str;
     }
@@ -238,26 +238,26 @@ class CreateFile
      * @param  [type]  $process [description]
      * @return [type]           [description]
      */
-    protected static function onConnectWorkerMan ($process)
+    protected static function onConnectWorkerMan($process)
     {
-        $str = "<?php\n\r";
-        $str .= "\n\r";
-        $str .= "namespace App\Callback\\" . $process . ";\n\r";
-        $str .= "\n\r";
-        $str .= "\n\r";
-        $str .= "class onConnect\n\r";
-        $str .= "{\n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * @method 初始化\n\r";
-        $str .= "     *  \n\r";
-        $str .= "     * @param  [type] \$connection [description]\n\r";
-        $str .= "     * @return [type]             [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function init (\$connection)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        \n\r";
-        $str .= "    }\n\r";
-        $str .= "}\n\r";
+        $str = "<?php\n";
+        $str .= "\n";
+        $str .= "namespace App\Callback\\" . $process . ";\n";
+        $str .= "\n";
+        $str .= "\n";
+        $str .= "class onConnect\n";
+        $str .= "{\n";
+        $str .= "    /**\n";
+        $str .= "     * @method 初始化\n";
+        $str .= "     *  \n";
+        $str .= "     * @param  [type] \$connection [description]\n";
+        $str .= "     * @return [type]             [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function init (\$connection)\n";
+        $str .= "    {\n";
+        $str .= "        \n";
+        $str .= "    }\n";
+        $str .= "}\n";
 
         return $str;
     }
@@ -268,108 +268,116 @@ class CreateFile
      * @param  [type]  $process [description]
      * @return [type]           [description]
      */
-    protected static function onMessageWorkerMan ($process)
+    protected static function onMessageWorkerMan($process)
     {
-        $str = "<?php\n\r";
-        $str .= "\n\r";
-        $str .= "namespace App\Callback\\" . $process . ";\n\r";
-        $str .= "\n\r";
-        $str .= "\n\r";
-        $str .= "class onMessage\n\r";
-        $str .= "{\n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * @method 初始化\n\r";
-        $str .= "     *  \n\r";
-        $str .= "     * @param  [type] \$connection [description]\n\r";
-        $str .= "     * @param  [type] \$message    [description]\n\r";
-        $str .= "     * @return [type]             [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function init (\$connection, \$message)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        if (in_array(\$connection->worker->protocol, [\"\\Workerman\\Protocols\\Http\", \"Workerman\\Protocols\\Http\"]))  {\n\r";
-        $str .= "            \$url = \$message->path();\n\r";
-        $str .= "        \n\r";
-        $str .= "            if (strpos(\$url, '/') === 0) {\n\r";
-        $str .= "                \$url = substr(\$url, 1, strlen(\$url) -1);\n\r";
-        $str .= "            }\n\r";
-        $str .= "        \n\r";
-        $str .= "            \$piece = count(explode('/', \$url));\n\r";
-        $str .= "        \n\r";
-        $str .= "            switch (\$piece) {\n\r";
-        $str .= "                case '1':\n\r";
-        $str .= "                    if (\$url === \"\") {\n\r";
-        $str .= "                        \$controller = \$action = parse_name('index', 1);\n\r";
-        $str .= "                    } else {\n\r";
-        $str .= "                        \$controller = \$action = parse_name(\$url, 1);\n\r";
-        $str .= "                    }\n\r";
-        $str .= "                    \$module = \"\";\n\r";
-        $str .= "                    break;\n\r";
-        $str .= "                case '2':\n\r";
-        $str .= "                    list(\$controller, \$action) = explode('/', \$url, 2);\n\r";
-        $str .= "                    \$module     = \"\";\n\r";
-        $str .= "                    \$controller = parse_name(\$controller, 1);\n\r";
-        $str .= "                    \$action     = parse_name(\$action, 1);\n\r";
-        $str .= "                    break;\n\r";
-        $str .= "                case '3':\n\r";
-        $str .= "                    list(\$module, \$controller, \$action) = explode('/', \$url, 3);\n\r";
-        $str .= "                    \$module     = \"\\\\\" . parse_name(\$module, 1);\n\r";
-        $str .= "                    \$controller = parse_name(\$controller, 1);\n\r";
-        $str .= "                    \$action     = parse_name(\$action, 1);\n\r";
-        $str .= "                    \n\r";
-        $str .= "                    break;\n\r";
-        $str .= "                default:\n\r";
-        $str .= "                    \$connection->send(json(['type'=>'error', 'msg'=>'非法操作！']));\n\r";
-        $str .= "                    return;\n\r";
-        $str .= "                    break;\n\r";
-        $str .= "            }\n\r";
-        $str .= "            \n\r";
-        $str .= "            if (is_callable(\"\\\App\\\Message\\\\" . $process . "{\$module}\\\{\$controller}::{\$action}\")) {\n\r";
-        $str .= "                call_user_func(\"\\\App\\\Message\\\\" . $process . "{\$module}\\\{\$controller}::{\$action}\", \$connection, \$message);\n\r";
-        $str .= "            } else {\n\r";
-        $str .= "            \$connection->send(json(['type'=>'error', 'msg'=>'非法操作！']));\n\r";
-        $str .= "            return;\n\r";
-        $str .= "            }\n\r";
-        $str .= "        } else {\n\r";
-        $str .= "            if (!is_string(\$message)) {\n\r";
-        $str .= "                \$connection->send(json(['type'=>'error', 'msg'=>'非法操作！']));\n\r";
-        $str .= "                return;\n\r";
-        $str .= "            }\n\r";
-        $str .= "            \n\r";
-        $str .= "            if (!\$message_data = json_decode(\$message, true)) {\n\r";
-        $str .= "                \$connection->send(json(['type'=>'error', 'msg'=>'非法操作！']));\n\r";
-        $str .= "                return;\n\r";
-        $str .= "            }\n\r";
-        $str .= "            \n\r";
-        $str .= "            if (empty(\$message_data['type'])) {\n\r";
-        $str .= "                \$connection->send(json(['type'=>'error', 'msg'=>'非法操作！']));\n\r";
-        $str .= "                return;\n\r";
-        $str .= "            }\n\r";
-        $str .= "            \n\r";
-        $str .= "            \$piece = count(explode('.', \$message_data['type']));\n\r";
-        $str .= "            \n\r";
-        $str .= "            switch (\$piece) {\n\r";
-        $str .= "                case '1':\n\r";
-        $str .= "                    \$controller = \$action = parse_name(\$message_data['type'], 1);\n\r";
-        $str .= "                    break;\n\r";
-        $str .= "                case '2':\n\r";
-        $str .= "                    list(\$controller, \$action) = explode('.', \$message_data['type'], 2);\n\r";
-        $str .= "                    \$controller = parse_name(\$controller, 1);\n\r";
-        $str .= "                    \$action     = parse_name(\$action, 1);\n\r";
-        $str .= "                    break;\n\r";
-        $str .= "                default:\n\r";
-        $str .= "                    \$connection->send(json(['type'=>'error', 'msg'=>'非法操作！']));\n\r";
-        $str .= "                    return;\n\r";
-        $str .= "                    break;\n\r";
-        $str .= "            }\n\r";
-        $str .= "            \n\r";
-        $str .= "            if (is_callable(\"\\\App\\\Message\\\\" . $process . "\\\\{\$controller}::{\$action}\")) {\n\r";
-        $str .= "                call_user_func(\"\\\App\\\Message\\\\" . $process . "\\\\{\$controller}::{\$action}\", \$connection, \$message_data);\n\r";
-        $str .= "            } else {\n\r";
-        $str .= "                \$connection->send(json(['type'=>'error', 'msg'=>'非法操作！']));\n\r";
-        $str .= "            }\n\r";
-        $str .= "        }\n\r";
-        $str .= "    }\n\r";
-        $str .= "}\n\r";
+        $str = "<?php\n";
+        $str .= "\n";
+        $str .= "namespace App\Callback\\" . $process . ";\n";
+        $str .= "\n";
+        $str .= "\n";
+        $str .= "class onMessage\n";
+        $str .= "{\n";
+        $str .= "    /**\n";
+        $str .= "     * @method 初始化\n";
+        $str .= "     *  \n";
+        $str .= "     * @param  [type] \$connection [description]\n";
+        $str .= "     * @param  [type] \$message    [description]\n";
+        $str .= "     * @return [type]             [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function init (\$connection, \$message)\n";
+        $str .= "    {\n";
+        $str .= "        if (in_array(\$connection->worker->protocol, [\"\\Workerman\\Protocols\\Http\", \"Workerman\\Protocols\\Http\"]))  {\n";
+        $str .= "            \$url = \$message->path();\n";
+        $str .= "        \n";
+        $str .= "            if (strpos(\$url, '/') === 0) {\n";
+        $str .= "                \$url = substr(\$url, 1, strlen(\$url) -1);\n";
+        $str .= "            }\n";
+        $str .= "        \n";
+        $str .= "            \$piece = count(explode('/', \$url));\n";
+        $str .= "        \n";
+        $str .= "            switch (\$piece) {\n";
+        $str .= "                case '1':\n";
+        $str .= "                    if (\$url === \"\") {\n";
+        $str .= "                        \$controller = \$action = parse_name('index', 1);\n";
+        $str .= "                    } else {\n";
+        $str .= "                        \$controller = \$action = parse_name(\$url, 1);\n";
+        $str .= "                    }\n";
+        $str .= "                    \$module = \"\";\n";
+        $str .= "                    break;\n";
+        $str .= "                case '2':\n";
+        $str .= "                    list(\$controller, \$action) = explode('/', \$url, 2);\n";
+        $str .= "                    \$module     = \"\";\n";
+        $str .= "                    \$controller = parse_name(\$controller, 1);\n";
+        $str .= "                    \$action     = parse_name(\$action, 1);\n";
+        $str .= "                    break;\n";
+        $str .= "                case '3':\n";
+        $str .= "                    list(\$module, \$controller, \$action) = explode('/', \$url, 3);\n";
+        $str .= "                    \$module     = \"\\\\\" . parse_name(\$module, 1);\n";
+        $str .= "                    \$controller = parse_name(\$controller, 1);\n";
+        $str .= "                    \$action     = parse_name(\$action, 1);\n";
+        $str .= "                    break;\n";
+        $str .= "                default:\n";
+        $str .= "                    \$connection->send(json(['type'=>'error', 'msg'=>'非法操作！']));\n";
+        $str .= "                    return;\n";
+        $str .= "                    break;\n";
+        $str .= "            }\n";
+        $str .= "            \n";
+        $str .= "            if (is_callable(\"\\\App\\\Message\\\\" . $process . "{\$module}\\\{\$controller}::{\$action}\")) {\n";
+        $str .= "                call_user_func(\"\\\App\\\Message\\\\" . $process . "{\$module}\\\{\$controller}::{\$action}\", \$connection, \$message);\n";
+        $str .= "            } else {\n";
+        $str .= "            \$connection->send(json(['type'=>'error', 'msg'=>'非法操作！']));\n";
+        $str .= "            return;\n";
+        $str .= "            }\n";
+        $str .= "        } else {\n";
+        $str .= "            if (!is_string(\$message)) {\n";
+        $str .= "                \$connection->send(json(['type'=>'error', 'msg'=>'非法操作！']));\n";
+        $str .= "                return;\n";
+        $str .= "            }\n";
+        $str .= "            \n";
+        $str .= "            if (!\$message_data = json_decode(\$message, true)) {\n";
+        $str .= "                \$connection->send(json(['type'=>'error', 'msg'=>'非法操作！']));\n";
+        $str .= "                return;\n";
+        $str .= "            }\n";
+        $str .= "            \n";
+        $str .= "            if (empty(\$message_data['type'])) {\n";
+        $str .= "                \$connection->send(json(['type'=>'error', 'msg'=>'非法操作！']));\n";
+        $str .= "                return;\n";
+        $str .= "            }\n";
+        $str .= "            \n";
+        $str .= "            \$piece = count(explode('.', \$message_data['type']));\n";
+        $str .= "            \n";
+        $str .= "            switch (\$piece) {\n";
+        $str .= "                case '1':\n";
+        $str .= "                    \$module = \"\";\n";
+        $str .= "                    \$controller = \$action = parse_name(\$message_data['type'], 1);\n";
+        $str .= "                    break;\n";
+        $str .= "                case '2':\n";
+        $str .= "                    list(\$controller, \$action) = explode('.', \$message_data['type'], 2);\n";
+        $str .= "                    \$module     = \"\";\n";
+        $str .= "                    \$controller = parse_name(\$controller, 1);\n";
+        $str .= "                    \$action     = parse_name(\$action, 1);\n";
+        $str .= "                    break;\n";
+        $str .= "                case '3':\n";
+        $str .= "                    list(\$module, \$controller, \$action) = explode('.', \$message_data['type'], 3);\n";
+        $str .= "                    \$module     = \"\\\\\" . parse_name(\$module, 1);\n";
+        $str .= "                    \$controller = parse_name(\$controller, 1);\n";
+        $str .= "                    \$action     = parse_name(\$action, 1);\n";
+        $str .= "                    \n";
+        $str .= "                    break;\n";
+        $str .= "                default:\n";
+        $str .= "                    \$connection->send(json(['type'=>'error', 'msg'=>'非法操作！']));\n";
+        $str .= "                    return;\n";
+        $str .= "                    break;\n";
+        $str .= "            }\n";
+        $str .= "            \n";
+        $str .= "            if (is_callable(\"\\\App\\\Message\\\\" . $process . "{\$module}\\\{\$controller}::{\$action}\")) {\n";
+        $str .= "                call_user_func(\"\\\App\\\Message\\\\" . $process . "{\$module}\\\{\$controller}::{\$action}\", \$connection, \$message_data);\n";
+        $str .= "            } else {\n";
+        $str .= "                \$connection->send(json(['type'=>'error', 'msg'=>'非法操作！']));\n";
+        $str .= "            }\n";
+        $str .= "        }\n";
+        $str .= "    }\n";
+        $str .= "}\n";
 
         return $str;
     }
@@ -380,26 +388,26 @@ class CreateFile
      * @param  [type]  $process [description]
      * @return [type]           [description]
      */
-    protected static function onCloseWorkerMan ($process)
+    protected static function onCloseWorkerMan($process)
     {
-        $str = "<?php\n\r";
-        $str .= "\n\r";
-        $str .= "namespace App\Callback\\" . $process . ";\n\r";
-        $str .= "\n\r";
-        $str .= "\n\r";
-        $str .= "class onClose\n\r";
-        $str .= "{\n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * @method 初始化\n\r";
-        $str .= "     *  \n\r";
-        $str .= "     * @param  [type] \$connection [description]\n\r";
-        $str .= "     * @return [type]             [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function init (\$connection)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        \n\r";
-        $str .= "    }\n\r";
-        $str .= "}\n\r";
+        $str = "<?php\n";
+        $str .= "\n";
+        $str .= "namespace App\Callback\\" . $process . ";\n";
+        $str .= "\n";
+        $str .= "\n";
+        $str .= "class onClose\n";
+        $str .= "{\n";
+        $str .= "    /**\n";
+        $str .= "     * @method 初始化\n";
+        $str .= "     *  \n";
+        $str .= "     * @param  [type] \$connection [description]\n";
+        $str .= "     * @return [type]             [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function init (\$connection)\n";
+        $str .= "    {\n";
+        $str .= "        \n";
+        $str .= "    }\n";
+        $str .= "}\n";
 
         return $str;
     }
@@ -410,26 +418,26 @@ class CreateFile
      * @param  [type]  $process [description]
      * @return [type]           [description]
      */
-    protected static function onBufferFullWorkerMan ($process)
+    protected static function onBufferFullWorkerMan($process)
     {
-        $str = "<?php\n\r";
-        $str .= "\n\r";
-        $str .= "namespace App\Callback\\" . $process . ";\n\r";
-        $str .= "\n\r";
-        $str .= "\n\r";
-        $str .= "class onBufferFull\n\r";
-        $str .= "{\n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * @method 初始化\n\r";
-        $str .= "     *  \n\r";
-        $str .= "     * @param  [type] \$connection [description]\n\r";
-        $str .= "     * @return [type]             [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function init (\$connection)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        \n\r";
-        $str .= "    }\n\r";
-        $str .= "}\n\r";
+        $str = "<?php\n";
+        $str .= "\n";
+        $str .= "namespace App\Callback\\" . $process . ";\n";
+        $str .= "\n";
+        $str .= "\n";
+        $str .= "class onBufferFull\n";
+        $str .= "{\n";
+        $str .= "    /**\n";
+        $str .= "     * @method 初始化\n";
+        $str .= "     *  \n";
+        $str .= "     * @param  [type] \$connection [description]\n";
+        $str .= "     * @return [type]             [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function init (\$connection)\n";
+        $str .= "    {\n";
+        $str .= "        \n";
+        $str .= "    }\n";
+        $str .= "}\n";
 
         return $str;
     }
@@ -440,26 +448,26 @@ class CreateFile
      * @param  [type]  $process [description]
      * @return [type]           [description]
      */
-    protected static function onBufferDrainWorkerMan ($process)
+    protected static function onBufferDrainWorkerMan($process)
     {
-        $str = "<?php\n\r";
-        $str .= "\n\r";
-        $str .= "namespace App\Callback\\" . $process . ";\n\r";
-        $str .= "\n\r";
-        $str .= "\n\r";
-        $str .= "class onBufferDrain\n\r";
-        $str .= "{\n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * @method 初始化\n\r";
-        $str .= "     *  \n\r";
-        $str .= "     * @param  [type] \$connection [description]\n\r";
-        $str .= "     * @return [type]             [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function init (\$connection)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        \n\r";
-        $str .= "    }\n\r";
-        $str .= "}\n\r";
+        $str = "<?php\n";
+        $str .= "\n";
+        $str .= "namespace App\Callback\\" . $process . ";\n";
+        $str .= "\n";
+        $str .= "\n";
+        $str .= "class onBufferDrain\n";
+        $str .= "{\n";
+        $str .= "    /**\n";
+        $str .= "     * @method 初始化\n";
+        $str .= "     *  \n";
+        $str .= "     * @param  [type] \$connection [description]\n";
+        $str .= "     * @return [type]             [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function init (\$connection)\n";
+        $str .= "    {\n";
+        $str .= "        \n";
+        $str .= "    }\n";
+        $str .= "}\n";
 
         return $str;
     }
@@ -470,28 +478,28 @@ class CreateFile
      * @param  [type]  $process [description]
      * @return [type]           [description]
      */
-    protected static function onErrorWorkerMan ($process)
+    protected static function onErrorWorkerMan($process)
     {
-        $str = "<?php\n\r";
-        $str .= "\n\r";
-        $str .= "namespace App\Callback\\" . $process . ";\n\r";
-        $str .= "\n\r";
-        $str .= "\n\r";
-        $str .= "class onError\n\r";
-        $str .= "{\n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * @method 初始化\n\r";
-        $str .= "     *  \n\r";
-        $str .= "     * @param  [type] \$connection [description]\n\r";
-        $str .= "     * @param  [type] \$code       [description]\n\r";
-        $str .= "     * @param  [type] \$msg        [description]\n\r";
-        $str .= "     * @return [type]             [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function init (\$connection, \$code, \$msg)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        \n\r";
-        $str .= "    }\n\r";
-        $str .= "}\n\r";
+        $str = "<?php\n";
+        $str .= "\n";
+        $str .= "namespace App\Callback\\" . $process . ";\n";
+        $str .= "\n";
+        $str .= "\n";
+        $str .= "class onError\n";
+        $str .= "{\n";
+        $str .= "    /**\n";
+        $str .= "     * @method 初始化\n";
+        $str .= "     *  \n";
+        $str .= "     * @param  [type] \$connection [description]\n";
+        $str .= "     * @param  [type] \$code       [description]\n";
+        $str .= "     * @param  [type] \$msg        [description]\n";
+        $str .= "     * @return [type]             [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function init (\$connection, \$code, \$msg)\n";
+        $str .= "    {\n";
+        $str .= "        \n";
+        $str .= "    }\n";
+        $str .= "}\n";
 
         return $str;
     }
@@ -502,26 +510,26 @@ class CreateFile
      * @param  [type]  $process [description]
      * @return [type]           [description]
      */
-    protected static function onWorkerStopWorkerMan ($process)
+    protected static function onWorkerStopWorkerMan($process)
     {
-        $str = "<?php\n\r";
-        $str .= "\n\r";
-        $str .= "namespace App\Callback\\" . $process . ";\n\r";
-        $str .= "\n\r";
-        $str .= "\n\r";
-        $str .= "class onWorkerStop\n\r";
-        $str .= "{\n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * @method 初始化\n\r";
-        $str .= "     *  \n\r";
-        $str .= "     * @param  [type] \$worker     [description]\n\r";
-        $str .= "     * @return [type]             [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function init (\$worker)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        \n\r";
-        $str .= "    }\n\r";
-        $str .= "}\n\r";
+        $str = "<?php\n";
+        $str .= "\n";
+        $str .= "namespace App\Callback\\" . $process . ";\n";
+        $str .= "\n";
+        $str .= "\n";
+        $str .= "class onWorkerStop\n";
+        $str .= "{\n";
+        $str .= "    /**\n";
+        $str .= "     * @method 初始化\n";
+        $str .= "     *  \n";
+        $str .= "     * @param  [type] \$worker     [description]\n";
+        $str .= "     * @return [type]             [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function init (\$worker)\n";
+        $str .= "    {\n";
+        $str .= "        \n";
+        $str .= "    }\n";
+        $str .= "}\n";
 
         return $str;
     }
@@ -532,29 +540,29 @@ class CreateFile
      * @param  [type]                     $process [description]
      * @return [type]                              [description]
      */
-    protected static function onWorkerStartGatewayWorker ($process)
+    protected static function onWorkerStartGatewayWorker($process)
     {
-        $str = "<?php\n\r";
-        $str .= "\n\r";
-        $str .= "namespace App\Callback\\" . $process . ";\n\r";
-        $str .= "\n\r";
-        $str .= "use support\bootstrap\Db;\n\r";
-        $str .= "use support\bootstrap\LoadTimer;\n\r";
-        $str .= "\n\r";
-        $str .= "class onWorkerStart\n\r";
-        $str .= "{\n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * @method 初始化\n\r";
-        $str .= "     *  \n\r";
-        $str .= "     * @param  [type] \$businessWorker [description]\n\r";
-        $str .= "     * @return [type]                 [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function init (\$businessWorker)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        Db::connect();\n\r";
-        $str .= "        LoadTimer::load(\$businessWorker);\n\r";
-        $str .= "    }\n\r";
-        $str .= "}\n\r";
+        $str = "<?php\n";
+        $str .= "\n";
+        $str .= "namespace App\Callback\\" . $process . ";\n";
+        $str .= "\n";
+        $str .= "use support\bootstrap\Db;\n";
+        $str .= "use support\bootstrap\LoadTimer;\n";
+        $str .= "\n";
+        $str .= "class onWorkerStart\n";
+        $str .= "{\n";
+        $str .= "    /**\n";
+        $str .= "     * @method 初始化\n";
+        $str .= "     *  \n";
+        $str .= "     * @param  [type] \$businessWorker [description]\n";
+        $str .= "     * @return [type]                 [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function init (\$businessWorker)\n";
+        $str .= "    {\n";
+        $str .= "        Db::connect();\n";
+        $str .= "        LoadTimer::load(\$businessWorker);\n";
+        $str .= "    }\n";
+        $str .= "}\n";
 
         return $str;
     }
@@ -565,26 +573,26 @@ class CreateFile
      * @param  [type]                     $process [description]
      * @return [type]                              [description]
      */
-    protected static function onConnectGatewayWorker ($process)
+    protected static function onConnectGatewayWorker($process)
     {
-        $str = "<?php\n\r";
-        $str .= "\n\r";
-        $str .= "namespace App\Callback\\" . $process . ";\n\r";
-        $str .= "\n\r";
-        $str .= "\n\r";
-        $str .= "class onConnect\n\r";
-        $str .= "{\n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * @method 初始化\n\r";
-        $str .= "     *  \n\r";
-        $str .= "     * @param  [type] \$client_id   [description]\n\r";
-        $str .= "     * @return [type]              [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function init (\$client_id)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        \n\r";
-        $str .= "    }\n\r";
-        $str .= "}\n\r";
+        $str = "<?php\n";
+        $str .= "\n";
+        $str .= "namespace App\Callback\\" . $process . ";\n";
+        $str .= "\n";
+        $str .= "\n";
+        $str .= "class onConnect\n";
+        $str .= "{\n";
+        $str .= "    /**\n";
+        $str .= "     * @method 初始化\n";
+        $str .= "     *  \n";
+        $str .= "     * @param  [type] \$client_id   [description]\n";
+        $str .= "     * @return [type]              [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function init (\$client_id)\n";
+        $str .= "    {\n";
+        $str .= "        \n";
+        $str .= "    }\n";
+        $str .= "}\n";
 
         return $str;
     }
@@ -595,27 +603,27 @@ class CreateFile
      * @param  [type]                     $process [description]
      * @return [type]                              [description]
      */
-    protected static function onWebSocketConnectGatewayWorker ($process)
+    protected static function onWebSocketConnectGatewayWorker($process)
     {
-        $str = "<?php\n\r";
-        $str .= "\n\r";
-        $str .= "namespace App\Callback\\" . $process . ";\n\r";
-        $str .= "\n\r";
-        $str .= "\n\r";
-        $str .= "class onWebSocketConnect\n\r";
-        $str .= "{\n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * @method 初始化\n\r";
-        $str .= "     *  \n\r";
-        $str .= "     * @param  [type] \$client_id   [description]\n\r";
-        $str .= "     * @param  [type] \$data        [description]\n\r";
-        $str .= "     * @return [type]              [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function init (\$client_id, \$data)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        \n\r";
-        $str .= "    }\n\r";
-        $str .= "}\n\r";
+        $str = "<?php\n";
+        $str .= "\n";
+        $str .= "namespace App\Callback\\" . $process . ";\n";
+        $str .= "\n";
+        $str .= "\n";
+        $str .= "class onWebSocketConnect\n";
+        $str .= "{\n";
+        $str .= "    /**\n";
+        $str .= "     * @method 初始化\n";
+        $str .= "     *  \n";
+        $str .= "     * @param  [type] \$client_id   [description]\n";
+        $str .= "     * @param  [type] \$data        [description]\n";
+        $str .= "     * @return [type]              [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function init (\$client_id, \$data)\n";
+        $str .= "    {\n";
+        $str .= "        \n";
+        $str .= "    }\n";
+        $str .= "}\n";
 
         return $str;
     }
@@ -626,64 +634,72 @@ class CreateFile
      * @param  [type]                     $process [description]
      * @return [type]                              [description]
      */
-    protected static function onMessageGatewayWorker ($process)
+    protected static function onMessageGatewayWorker($process)
     {
-        $str = "<?php\n\r";
-        $str .= "\n\r";
-        $str .= "namespace App\Callback\\" . $process . ";\n\r";
-        $str .= "\n\r";
-        $str .= "use GatewayWorker\Lib\Gateway;\n\r";
-        $str .= "\n\r";
-        $str .= "class onMessage\n\r";
-        $str .= "{\n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * @method 初始化\n\r";
-        $str .= "     *  \n\r";
-        $str .= "     * @param  [type] \$client_id   [description]\n\r";
-        $str .= "     * @param  [type] \$message     [description]\n\r";
-        $str .= "     * @return [type]              [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function init (\$client_id, \$message)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        if (!is_string(\$message)) {\n\r";
-        $str .= "            Gateway::sendToClient(\$client_id, json(['type'=>'error', 'msg'=>'非法操作！']));\n\r";
-        $str .= "            return;\n\r";
-        $str .= "        }\n\r";
-        $str .= "        \n\r";
-        $str .= "        if (!\$message_data = json_decode(\$message, true)) {\n\r";
-        $str .= "            Gateway::sendToClient(\$client_id, json(['type'=>'error', 'msg'=>'非法操作！']));\n\r";
-        $str .= "            return;\n\r";
-        $str .= "        }\n\r";
-        $str .= "        \n\r";
-        $str .= "        if (empty(\$message_data['type'])) {\n\r";
-        $str .= "            Gateway::sendToClient(\$client_id, json(['type'=>'error', 'msg'=>'非法操作！']));\n\r";
-        $str .= "            return;\n\r";
-        $str .= "        }\n\r";
-        $str .= "        \n\r";
-        $str .= "        \$piece = count(explode('.', \$message_data['type']));\n\r";
-        $str .= "        \n\r";
-        $str .= "        switch (\$piece) {\n\r";
-        $str .= "            case '1':\n\r";
-        $str .= "                \$controller = \$action = parse_name(\$message_data['type'], 1);\n\r";
-        $str .= "                break;\n\r";
-        $str .= "            case '2':\n\r";
-        $str .= "                list(\$controller, \$action) = explode('.', \$message_data['type'], 2);\n\r";
-        $str .= "                \$controller = parse_name(\$controller, 1);\n\r";
-        $str .= "                \$action     = parse_name(\$action, 1);\n\r";
-        $str .= "                break;\n\r";
-        $str .= "            default:\n\r";
-        $str .= "                Gateway::sendToClient(\$client_id, json(['type'=>'error', 'msg'=>'非法操作！']));\n\r";
-        $str .= "                return;\n\r";
-        $str .= "                break;\n\r";
-        $str .= "        }\n\r";
-        $str .= "        \n\r";
-        $str .= "        if (is_callable(\"\\\App\\\Message\\\\" . $process . "\\\\{\$controller}::{\$action}\")) {\n\r";
-        $str .= "            call_user_func(\"\\\App\\\Message\\\\" . $process . "\\\\{\$controller}::{\$action}\", \$client_id, \$message_data);\n\r";
-        $str .= "        } else {\n\r";
-        $str .= "            Gateway::sendToClient(\$client_id, json(['type'=>'error', 'msg'=>'非法操作！']));\n\r";
-        $str .= "        }\n\r";
-        $str .= "    }\n\r";
-        $str .= "}\n\r";
+        $str = "<?php\n";
+        $str .= "\n";
+        $str .= "namespace App\Callback\\" . $process . ";\n";
+        $str .= "\n";
+        $str .= "use GatewayWorker\Lib\Gateway;\n";
+        $str .= "\n";
+        $str .= "class onMessage\n";
+        $str .= "{\n";
+        $str .= "    /**\n";
+        $str .= "     * @method 初始化\n";
+        $str .= "     *  \n";
+        $str .= "     * @param  [type] \$client_id   [description]\n";
+        $str .= "     * @param  [type] \$message     [description]\n";
+        $str .= "     * @return [type]              [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function init (\$client_id, \$message)\n";
+        $str .= "    {\n";
+        $str .= "        if (!is_string(\$message)) {\n";
+        $str .= "            Gateway::sendToClient(\$client_id, json(['type'=>'error', 'msg'=>'非法操作！']));\n";
+        $str .= "            return;\n";
+        $str .= "        }\n";
+        $str .= "        \n";
+        $str .= "        if (!\$message_data = json_decode(\$message, true)) {\n";
+        $str .= "            Gateway::sendToClient(\$client_id, json(['type'=>'error', 'msg'=>'非法操作！']));\n";
+        $str .= "            return;\n";
+        $str .= "        }\n";
+        $str .= "        \n";
+        $str .= "        if (empty(\$message_data['type'])) {\n";
+        $str .= "            Gateway::sendToClient(\$client_id, json(['type'=>'error', 'msg'=>'非法操作！']));\n";
+        $str .= "            return;\n";
+        $str .= "        }\n";
+        $str .= "        \n";
+        $str .= "        \$piece = count(explode('.', \$message_data['type']));\n";
+        $str .= "        \n";
+        $str .= "        switch (\$piece) {\n";
+        $str .= "            case '1':\n";
+        $str .= "                \$module = \"\";\n";
+        $str .= "                \$controller = \$action = parse_name(\$message_data['type'], 1);\n";
+        $str .= "                break;\n";
+        $str .= "            case '2':\n";
+        $str .= "                list(\$controller, \$action) = explode('.', \$message_data['type'], 2);\n";
+        $str .= "                \$module     = \"\";\n";
+        $str .= "                \$controller = parse_name(\$controller, 1);\n";
+        $str .= "                \$action     = parse_name(\$action, 1);\n";
+        $str .= "                break;\n";
+        $str .= "            case '3':\n";
+        $str .= "                list(\$module, \$controller, \$action) = explode('.', \$message_data['type'], 3);\n";
+        $str .= "                \$module     = \"\\\\\" . parse_name(\$module, 1);\n";
+        $str .= "                \$controller = parse_name(\$controller, 1);\n";
+        $str .= "                \$action     = parse_name(\$action, 1);\n";
+        $str .= "                break;\n";
+        $str .= "            default:\n";
+        $str .= "                Gateway::sendToClient(\$client_id, json(['type'=>'error', 'msg'=>'非法操作！']));\n";
+        $str .= "                return;\n";
+        $str .= "                break;\n";
+        $str .= "        }\n";
+        $str .= "        \n";
+        $str .= "        if (is_callable(\"\\\App\\\Message\\\\" . $process . "{\$module}\\\{\$controller}::{\$action}\")) {\n";
+        $str .= "            call_user_func(\"\\\App\\\Message\\\\" . $process . "{\$module}\\\{\$controller}::{\$action}\", \$client_id, \$message_data);\n";
+        $str .= "        } else {\n";
+        $str .= "            Gateway::sendToClient(\$client_id, json(['type'=>'error', 'msg'=>'非法操作！']));\n";
+        $str .= "        }\n";
+        $str .= "    }\n";
+        $str .= "}\n";
 
         return $str;
     }
@@ -694,26 +710,26 @@ class CreateFile
      * @param  [type]                     $process [description]
      * @return [type]                              [description]
      */
-    protected static function onCloseGatewayWorker ($process)
+    protected static function onCloseGatewayWorker($process)
     {
-        $str = "<?php\n\r";
-        $str .= "\n\r";
-        $str .= "namespace App\Callback\\" . $process . ";\n\r";
-        $str .= "\n\r";
-        $str .= "\n\r";
-        $str .= "class onClose\n\r";
-        $str .= "{\n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * @method 初始化\n\r";
-        $str .= "     *  \n\r";
-        $str .= "     * @param  [type] \$client_id   [description]\n\r";
-        $str .= "     * @return [type]              [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function init (\$client_id)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        \n\r";
-        $str .= "    }\n\r";
-        $str .= "}\n\r";
+        $str = "<?php\n";
+        $str .= "\n";
+        $str .= "namespace App\Callback\\" . $process . ";\n";
+        $str .= "\n";
+        $str .= "\n";
+        $str .= "class onClose\n";
+        $str .= "{\n";
+        $str .= "    /**\n";
+        $str .= "     * @method 初始化\n";
+        $str .= "     *  \n";
+        $str .= "     * @param  [type] \$client_id   [description]\n";
+        $str .= "     * @return [type]              [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function init (\$client_id)\n";
+        $str .= "    {\n";
+        $str .= "        \n";
+        $str .= "    }\n";
+        $str .= "}\n";
 
         return $str;
     }
@@ -724,26 +740,26 @@ class CreateFile
      * @param  [type]                     $process [description]
      * @return [type]                              [description]
      */
-    protected static function onWorkerStopGatewayWorker ($process)
+    protected static function onWorkerStopGatewayWorker($process)
     {
-        $str = "<?php\n\r";
-        $str .= "\n\r";
-        $str .= "namespace App\Callback\\" . $process . ";\n\r";
-        $str .= "\n\r";
-        $str .= "\n\r";
-        $str .= "class onWorkerStop\n\r";
-        $str .= "{\n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * @method 初始化\n\r";
-        $str .= "     *  \n\r";
-        $str .= "     * @param  [type] \$businessWorker [description]\n\r";
-        $str .= "     * @return [type]                 [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function init (\$businessWorker)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        \n\r";
-        $str .= "    }\n\r";
-        $str .= "}\n\r";
+        $str = "<?php\n";
+        $str .= "\n";
+        $str .= "namespace App\Callback\\" . $process . ";\n";
+        $str .= "\n";
+        $str .= "\n";
+        $str .= "class onWorkerStop\n";
+        $str .= "{\n";
+        $str .= "    /**\n";
+        $str .= "     * @method 初始化\n";
+        $str .= "     *  \n";
+        $str .= "     * @param  [type] \$businessWorker [description]\n";
+        $str .= "     * @return [type]                 [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function init (\$businessWorker)\n";
+        $str .= "    {\n";
+        $str .= "        \n";
+        $str .= "    }\n";
+        $str .= "}\n";
 
         return $str;
     }
@@ -753,44 +769,44 @@ class CreateFile
      *  
      * @param  [type] $process [description]
      */
-    protected static function Timer ($process)
+    protected static function Timer($process)
     {
-        $str = "<?php\n\r";
-        $str .= "\n\r";
-        $str .= "namespace App\Timer\\" . $process . ";\n\r";
-        $str .= "\n\r";
-        $str .= "\n\r";
-        $str .= "class Test\n\r";
-        $str .= "{\n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * 是否运行\n\r";
-        $str .= "     * @var boolean\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static \$run = false;\n\r";
-        $str .= "    \n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * 间隔时间\n\r";
-        $str .= "     * @var integer\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static \$interval = 3;\n\r";
-        $str .= "    \n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * 是否是持久的\n\r";
-        $str .= "     * @var boolean\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static \$persistent = true;\n\r";
-        $str .= "    \n\r";
-        $str .= "    /**\n\r";
-        $str .= "     * @method init\n\r";
-        $str .= "     *\n\r";
-        $str .= "     * @param  [type] \$timer_id [定时器ID]\n\r";
-        $str .= "     * @return [type]           [description]\n\r";
-        $str .= "     */\n\r";
-        $str .= "    public static function init (\$timer_id)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        var_dump(\$timer_id);\n\r";
-        $str .= "    }\n\r";
-        $str .= "}\n\r";
+        $str = "<?php\n";
+        $str .= "\n";
+        $str .= "namespace App\Timer\\" . $process . ";\n";
+        $str .= "\n";
+        $str .= "\n";
+        $str .= "class Test\n";
+        $str .= "{\n";
+        $str .= "    /**\n";
+        $str .= "     * 是否运行\n";
+        $str .= "     * @var boolean\n";
+        $str .= "     */\n";
+        $str .= "    public static \$run = false;\n";
+        $str .= "    \n";
+        $str .= "    /**\n";
+        $str .= "     * 间隔时间\n";
+        $str .= "     * @var integer\n";
+        $str .= "     */\n";
+        $str .= "    public static \$interval = 3;\n";
+        $str .= "    \n";
+        $str .= "    /**\n";
+        $str .= "     * 是否是持久的\n";
+        $str .= "     * @var boolean\n";
+        $str .= "     */\n";
+        $str .= "    public static \$persistent = true;\n";
+        $str .= "    \n";
+        $str .= "    /**\n";
+        $str .= "     * @method init\n";
+        $str .= "     *\n";
+        $str .= "     * @param  [type] \$timer_id [定时器ID]\n";
+        $str .= "     * @return [type]           [description]\n";
+        $str .= "     */\n";
+        $str .= "    public static function init (\$timer_id)\n";
+        $str .= "    {\n";
+        $str .= "        var_dump(\$timer_id);\n";
+        $str .= "    }\n";
+        $str .= "}\n";
 
         return $str;
     }
@@ -800,27 +816,27 @@ class CreateFile
      *  
      * @param  [type] $process [description]
      */
-    protected static function MessageWorkerMan ($process)
+    protected static function MessageWorkerMan($process)
     {
-        $str = "<?php\n\r";
-        $str .= "\n\r";
-        $str .= "namespace App\Message\\" . $process . ";\n\r";
-        $str .= "\n\r";
-        $str .= "\n\r";
-        $str .= "class Index\n\r";
-        $str .= "{\n\r";
-        $str .= "   /**\n\r";
-        $str .= "    * @method Index\n\r";
-        $str .= "    *\n\r";
-        $str .= "    * @param  [type] \$connection [description]\n\r";
-        $str .= "    * @param  [type] \$message    [description]\n\r";
-        $str .= "    * @return [type]             [description]\n\r";
-        $str .= "    */\n\r";
-        $str .= "    public static function Index (\$connection, \$message)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        \$connection->send(json(['type'=>'Index']));\n\r";
-        $str .= "    }\n\r";
-        $str .= "}\n\r";
+        $str = "<?php\n";
+        $str .= "\n";
+        $str .= "namespace App\Message\\" . $process . ";\n";
+        $str .= "\n";
+        $str .= "\n";
+        $str .= "class Index\n";
+        $str .= "{\n";
+        $str .= "   /**\n";
+        $str .= "    * @method Index\n";
+        $str .= "    *\n";
+        $str .= "    * @param  [type] \$connection [description]\n";
+        $str .= "    * @param  [type] \$message    [description]\n";
+        $str .= "    * @return [type]             [description]\n";
+        $str .= "    */\n";
+        $str .= "    public static function Index (\$connection, \$message)\n";
+        $str .= "    {\n";
+        $str .= "        \$connection->send(json(['type'=>'Index']));\n";
+        $str .= "    }\n";
+        $str .= "}\n";
 
         return $str;
     }
@@ -830,28 +846,28 @@ class CreateFile
      *  
      * @param  [type] $process [description]
      */
-    protected static function MessageGatewayWorker ($process)
+    protected static function MessageGatewayWorker($process)
     {
-        $str = "<?php\n\r";
-        $str .= "\n\r";
-        $str .= "namespace App\Message\\" . $process . ";\n\r";
-        $str .= "\n\r";
-        $str .= "use GatewayWorker\Lib\Gateway;\n\r";
-        $str .= "\n\r";
-        $str .= "class Index\n\r";
-        $str .= "{\n\r";
-        $str .= "   /**\n\r";
-        $str .= "    * @method Index\n\r";
-        $str .= "    *\n\r";
-        $str .= "    * @param  [type] \$client_id    [description]\n\r";
-        $str .= "    * @param  [type] \$message_data [description]\n\r";
-        $str .= "    * @return [type]               [description]\n\r";
-        $str .= "    */\n\r";
-        $str .= "    public static function Index (\$client_id, \$message_data)\n\r";
-        $str .= "    {\n\r";
-        $str .= "        Gateway::sendToClient(\$client_id, json(['type'=>'Index']));\n\r";
-        $str .= "    }\n\r";
-        $str .= "}\n\r";
+        $str = "<?php\n";
+        $str .= "\n";
+        $str .= "namespace App\Message\\" . $process . ";\n";
+        $str .= "\n";
+        $str .= "use GatewayWorker\Lib\Gateway;\n";
+        $str .= "\n";
+        $str .= "class Index\n";
+        $str .= "{\n";
+        $str .= "   /**\n";
+        $str .= "    * @method Index\n";
+        $str .= "    *\n";
+        $str .= "    * @param  [type] \$client_id    [description]\n";
+        $str .= "    * @param  [type] \$message_data [description]\n";
+        $str .= "    * @return [type]               [description]\n";
+        $str .= "    */\n";
+        $str .= "    public static function Index (\$client_id, \$message_data)\n";
+        $str .= "    {\n";
+        $str .= "        Gateway::sendToClient(\$client_id, json(['type'=>'Index']));\n";
+        $str .= "    }\n";
+        $str .= "}\n";
 
         return $str;
     }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 ini_set('display_errors', 'on');
 
@@ -16,12 +16,14 @@ use Workerman\Connection\TcpConnection;
 use GatewayWorker\Gateway;
 use GatewayWorker\Register;
 use GatewayWorker\BusinessWorker;
+use Workerman\Protocols\Http;
+use Workerman\Protocols\Http\Session;
+use Workerman\Protocols\Http\Session\FileSessionHandler;
+use Workerman\Protocols\Http\Session\RedisSessionHandler;
 use support\bootstrap\Config;
 use support\bootstrap\CreateFile;
 
-if (is_dir(app_path())) {
-    load_files(app_path());
-}
+load_files(callback_path());
 load_files(bootstrap_path());
 load_files(extend_path());
 Config::load(config_path());
@@ -29,16 +31,18 @@ Config::load(config_path());
 if (!is_dir(runtime_path())) {
     mkdir(runtime_path(), 0777, true);
 }
-Worker::$logFile                      = runtime_path(). '/workerman.log';
-Worker::$pidFile                      = runtime_path(). '/workerman.pid';
-Worker::$stdoutFile                   = runtime_path(). '/stdout.log';
-TcpConnection::$defaultMaxPackageSize = 10*1024*1024;
+Worker::$logFile                      = runtime_path() . '/workerman.log';
+Worker::$pidFile                      = runtime_path() . '/workerman.pid';
+Worker::$stdoutFile                   = runtime_path() . '/stdout.log';
+TcpConnection::$defaultMaxPackageSize = 10 * 1024 * 1024;
 
 $process = config('process', []);
 
-$worker_names = array_merge(array_keys($process['workerman']), array_keys($process['gateway_worker']));
-if (count($worker_names) != count(array_unique($worker_names))) {  
-   throw new Exception("There are duplicates in the process names of WorkerMan and GatewayWorker");
+if (!empty($process['workerman']) && !empty($process['gateway_worker'])) {
+    $worker_names = array_merge(array_keys($process['workerman']), array_keys($process['gateway_worker']));
+    if (count($worker_names) != count(array_unique($worker_names))) {
+        throw new Exception("There are duplicates in the process names of WorkerMan and GatewayWorker");
+    }
 }
 
 if (!empty($process['workerman'])) {
@@ -59,8 +63,32 @@ if (!empty($process['workerman'])) {
                 $worker->$property = $config[$property];
             }
         }
+        $worker->config = $config;
+        $worker->onWorkerStart = function ($worker) {
+            if (in_array($worker->protocol, ["\Workerman\Protocols\Http", "Workerman\Protocols\Http"])) {
+                $session      = $worker->config['session'] ?? [];
+                $type         = $session['type'] ?? 'file';
+                $session_name = $session['session_name'] ?? 'PHPSID';
+                $config       = $session['config'][$type] ?? ['save_path' => runtime_path() . DS . 'sessions'];
+
+                Http::sessionName($session_name);
+                switch ($type) {
+                    case 'file':
+                        Session::handlerClass(FileSessionHandler::class, $config);
+                        break;
+                    case 'redis':
+                        Session::handlerClass(RedisSessionHandler::class, $config);
+                        break;
+                }
+            }
+            if (in_array('onWorkerStart', $worker->config['callback'])) {
+                if (!method_exists("\\App\\Callback\\{$worker->name}\\onWorkerStart", "init")) {
+                    CreateFile::create("\\App\\Callback\\{$worker->name}\\onWorkerStart", "WorkerMan");
+                }
+                call_user_func("\\App\\Callback\\{$worker->name}\\onWorkerStart::init", $worker);
+            }
+        };
         $callback_map = [
-            'onWorkerStart',
             'onWorkerReload',
             'onConnect',
             'onMessage',
@@ -89,7 +117,7 @@ if (!empty($process['gateway_worker'])) {
 
     foreach ($process['gateway_worker'] as $process_name => $config) {
         $process_name = parse_name($process_name, 1);
-        
+
         $callback_map = [
             'onWorkerStart',
             'onConnect',
@@ -99,7 +127,7 @@ if (!empty($process['gateway_worker'])) {
             'onWorkerStop'
         ];
         foreach ($callback_map as $name) {
-            if (!in_array($name, $config['callback'])) {
+            if (!in_array($name, $config['callback'] ?? []) || empty($config['business_count'])) {
                 continue;
             }
             if (!method_exists("\\App\\Callback\\{$process_name}\\{$name}", "init")) {
@@ -107,25 +135,33 @@ if (!empty($process['gateway_worker'])) {
             }
         }
 
-        $register                   = new Register("text://" . $config['register']);
-        $register->name             = $process_name;
-        $gateway                    = new Gateway($config['listen'], $config['context'] ?? []);
-        $gateway->transport         = $config['transport'] ?? 'tcp';
-        $gateway->name              = $process_name;
-        $gateway->count             = $config['count'];
-        $gateway->lanIp             = $config['lan_ip'];
-        $gateway->startPort         = $config['start_port'];
-        $gateway->pingInterval      = $config['pinginterval'];
-        $gateway->pingData          = $config['pingdata'];
-        $gateway->registerAddress   = $config['register'];
-        $bussiness                  = new BusinessWorker();
-        $bussiness->name            = $process_name;
-        $bussiness->count           = $config['business_count'];
-        $bussiness->registerAddress = $config['register'];
-        $bussiness->eventHandler    = '\\App\\Callback\\Events';
+        if (in_array('Register', $config['type'] ?? [])) {
+            $register                   = new Register("text://" . $config['register']);
+            $register->name             = $process_name;
+        }
+
+        if (in_array('Gateway', $config['type'] ?? [])) {
+            $gateway                    = new Gateway($config['listen'], $config['context'] ?? []);
+            $gateway->transport         = $config['transport'] ?? 'tcp';
+            $gateway->name              = $process_name;
+            $gateway->count             = $config['count'];
+            $gateway->lanIp             = $config['lan_ip'];
+            $gateway->startPort         = $config['start_port'];
+            $gateway->pingInterval      = $config['pinginterval'];
+            $gateway->pingData          = $config['pingdata'];
+            $gateway->registerAddress   = $config['register'];
+        }
+
+        if (in_array('BusinessWorker', $config['type'] ?? [])) {
+            $bussiness                  = new BusinessWorker();
+            $bussiness->name            = $process_name;
+            $bussiness->count           = $config['business_count'];
+            $bussiness->registerAddress = $config['register'];
+            $bussiness->eventHandler    = '\\App\\Callback\\Events';
+        }
 
         if (!defined($process_name . "Register")) {
-            define($process_name . "Register", $config['register']);
+            define($process_name . "Register", $config['register'] ?? '');
         }
     }
 }
@@ -150,10 +186,10 @@ if (!empty($process['channel'])) {
 
         if (!defined("Channel" . $process_name . "Ip")) {
             define("Channel" . $process_name . "Ip", $config['listen_ip']);
-        }     
+        }
         if (!defined("Channel" . $process_name . "Port")) {
             define("Channel" . $process_name . "Port", $config['listen_port']);
-        }   
+        }
     }
 }
 
