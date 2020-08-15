@@ -36,9 +36,11 @@ TcpConnection::$defaultMaxPackageSize = 10*1024*1024;
 
 $process = config('process', []);
 
-$worker_names = array_merge(array_keys($process['workerman']), array_keys($process['gateway_worker']));
-if (count($worker_names) != count(array_unique($worker_names))) {  
-   throw new Exception("There are duplicates in the process names of WorkerMan and GatewayWorker");
+if (!empty($process['workerman']) && !empty($process['gateway_worker'])) {
+    $worker_names = array_merge(array_keys($process['workerman']), array_keys($process['gateway_worker']));
+    if (count($worker_names) != count(array_unique($worker_names))) {  
+       throw new Exception("There are duplicates in the process names of WorkerMan and GatewayWorker");
+    }
 }
 
 if (!empty($process['workerman'])) {
