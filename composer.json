@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "php": ">=5.3",
+        "php": ">=7.2",
         "workerman/workerman": "^4.0",
         "workerman/gateway-worker": "^3.0",
         "workerman/gatewayclient": "^3.0",
