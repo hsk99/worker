@@ -159,6 +159,9 @@ class CreateFile
         $str .= "    }\n";
         $str .= "}\n";
 
+        if (!is_dir(callback_path())) {
+            mkdir(callback_path(), 0777, true);
+        }
         if (!file_exists(callback_path() . DS . "Events.php")) {
             $ok = file_put_contents(callback_path() . DS . "Events.php", $str);
             if (!$ok) {
