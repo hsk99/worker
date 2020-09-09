@@ -217,7 +217,6 @@ class CreateFile
         $str .= "\n";
         $str .= "namespace App\Callback\\" . $process . ";\n";
         $str .= "\n";
-        $str .= "\n";
         $str .= "class onWorkerReload\n";
         $str .= "{\n";
         $str .= "    /**\n";
@@ -247,7 +246,6 @@ class CreateFile
         $str .= "\n";
         $str .= "namespace App\Callback\\" . $process . ";\n";
         $str .= "\n";
-        $str .= "\n";
         $str .= "class onConnect\n";
         $str .= "{\n";
         $str .= "    /**\n";
@@ -276,7 +274,6 @@ class CreateFile
         $str = "<?php\n";
         $str .= "\n";
         $str .= "namespace App\Callback\\" . $process . ";\n";
-        $str .= "\n";
         $str .= "\n";
         $str .= "class onMessage\n";
         $str .= "{\n";
@@ -397,7 +394,6 @@ class CreateFile
         $str .= "\n";
         $str .= "namespace App\Callback\\" . $process . ";\n";
         $str .= "\n";
-        $str .= "\n";
         $str .= "class onClose\n";
         $str .= "{\n";
         $str .= "    /**\n";
@@ -426,7 +422,6 @@ class CreateFile
         $str = "<?php\n";
         $str .= "\n";
         $str .= "namespace App\Callback\\" . $process . ";\n";
-        $str .= "\n";
         $str .= "\n";
         $str .= "class onBufferFull\n";
         $str .= "{\n";
@@ -457,7 +452,6 @@ class CreateFile
         $str .= "\n";
         $str .= "namespace App\Callback\\" . $process . ";\n";
         $str .= "\n";
-        $str .= "\n";
         $str .= "class onBufferDrain\n";
         $str .= "{\n";
         $str .= "    /**\n";
@@ -486,7 +480,6 @@ class CreateFile
         $str = "<?php\n";
         $str .= "\n";
         $str .= "namespace App\Callback\\" . $process . ";\n";
-        $str .= "\n";
         $str .= "\n";
         $str .= "class onError\n";
         $str .= "{\n";
@@ -519,6 +512,7 @@ class CreateFile
         $str .= "\n";
         $str .= "namespace App\Callback\\" . $process . ";\n";
         $str .= "\n";
+        $str .= "use GatewayWorker\Lib\Gateway;\n";
         $str .= "\n";
         $str .= "class onWorkerStop\n";
         $str .= "{\n";
@@ -582,6 +576,7 @@ class CreateFile
         $str .= "\n";
         $str .= "namespace App\Callback\\" . $process . ";\n";
         $str .= "\n";
+        $str .= "use GatewayWorker\Lib\Gateway;\n";
         $str .= "\n";
         $str .= "class onConnect\n";
         $str .= "{\n";
@@ -612,6 +607,7 @@ class CreateFile
         $str .= "\n";
         $str .= "namespace App\Callback\\" . $process . ";\n";
         $str .= "\n";
+        $str .= "use GatewayWorker\Lib\Gateway;\n";
         $str .= "\n";
         $str .= "class onWebSocketConnect\n";
         $str .= "{\n";
@@ -719,6 +715,7 @@ class CreateFile
         $str .= "\n";
         $str .= "namespace App\Callback\\" . $process . ";\n";
         $str .= "\n";
+        $str .= "use GatewayWorker\Lib\Gateway;\n";
         $str .= "\n";
         $str .= "class onClose\n";
         $str .= "{\n";
@@ -749,6 +746,7 @@ class CreateFile
         $str .= "\n";
         $str .= "namespace App\Callback\\" . $process . ";\n";
         $str .= "\n";
+        $str .= "use GatewayWorker\Lib\Gateway;\n";
         $str .= "\n";
         $str .= "class onWorkerStop\n";
         $str .= "{\n";
@@ -777,7 +775,6 @@ class CreateFile
         $str = "<?php\n";
         $str .= "\n";
         $str .= "namespace App\Timer\\" . $process . ";\n";
-        $str .= "\n";
         $str .= "\n";
         $str .= "class Test\n";
         $str .= "{\n";
@@ -824,7 +821,6 @@ class CreateFile
         $str = "<?php\n";
         $str .= "\n";
         $str .= "namespace App\Message\\" . $process . ";\n";
-        $str .= "\n";
         $str .= "\n";
         $str .= "class Index\n";
         $str .= "{\n";
