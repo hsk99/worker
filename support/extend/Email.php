@@ -8,16 +8,20 @@ use PHPMailer\PHPMailer\SMTP;
 class Email
 {
     /**
-     * @method 发送邮件
-     *  
-     * @param  [type]  $to_mail    [description]
-     * @param  string  $subject    [description]
-     * @param  string  $body       [description]
-     * @param  [type]  $attachment [description]
-     * @param  boolean $is_html    [description]
-     * @return [type]              [description]
+     * 发送邮件
+     *
+     * @Author    HSK
+     * @DateTime  2020-10-16 13:54:22
+     *
+     * @param [type] $to_mail
+     * @param string $subject
+     * @param string $body
+     * @param [type] $attachment
+     * @param bool $is_html
+     *
+     * @return void
      */
-    public static function send ($to_mail, $subject = '', $body = '', $attachment = null, $is_html = true)
+    public static function send($to_mail, $subject = '', $body = '', $attachment = null, $is_html = true)
     {
         $config = config('email');
 
@@ -25,7 +29,7 @@ class Email
             $mail = new PHPMailer();
 
             // 服务器设置
-            $mail->CharSet    ="UTF-8";
+            $mail->CharSet    = "UTF-8";
             $mail->SMTPDebug  = 0;
             $mail->isSMTP();
             $mail->Host       = $config['SMTP_HOST'];
@@ -63,8 +67,8 @@ class Email
             $mail->AltBody = $body;
 
             return $mail->send() ? true : $mail->ErrorInfo;
-        } catch (Exception $e) {
-            return $e->getMessage();
+        } catch (\Throwable $th) {
+            return $th->getMessage();
         }
     }
 }

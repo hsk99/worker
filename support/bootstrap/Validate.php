@@ -233,7 +233,8 @@ class Validate
     {
         if (is_array($name)) {
             $this->scene = array_merge($this->scene, $name);
-        }if (is_null($fields)) {
+        }
+        if (is_null($fields)) {
             // 设置当前场景
             $this->currentScene = $name;
         } else {
@@ -1090,7 +1091,8 @@ class Validate
             $msg = str_replace(
                 [':attribute', ':rule', ':1', ':2', ':3'],
                 [$title, (string) $rule, $array[0], $array[1], $array[2]],
-                $msg);
+                $msg
+            );
         }
         return $msg;
     }

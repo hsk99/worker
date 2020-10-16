@@ -40,6 +40,7 @@ $str .= "\n";
 $str .= "use Workerman\Worker;\n";
 $str .= "use support\bootstrap\Config;\n";
 $str .= "\n";
+$str .= "load_files(protocols_path());\n";
 $str .= "load_files(app_path());\n";
 $str .= "load_files(bootstrap_path());\n";
 $str .= "load_files(extend_path());\n";

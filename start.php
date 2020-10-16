@@ -23,6 +23,7 @@ use Workerman\Protocols\Http\Session\RedisSessionHandler;
 use support\bootstrap\Config;
 use support\bootstrap\CreateFile;
 
+load_files(protocols_path());
 load_files(callback_path());
 load_files(bootstrap_path());
 load_files(extend_path());

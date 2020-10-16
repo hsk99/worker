@@ -19,13 +19,12 @@ class LoadTimer
      * @param  boolean $type   [description]
      * @return [type]          [description]
      */
-    public static function load ($worker = '', $type = false)
-    {        
+    public static function load($worker = '', $type = false)
+    {
         $worker_name  = parse_name($worker->name, 1);
         $worker_count = $worker->count;
 
-        foreach (glob(timer_path() . DS . $worker_name . '/*.php') as $task => $file)
-        {
+        foreach (glob(timer_path() . DS . $worker_name . '/*.php') as $task => $file) {
             $basename = basename($file, '.php');
             $class    = "\\App\\Timer\\{$worker_name}\\{$basename}";
 

@@ -96,6 +96,16 @@ function runtime_path()
 }
 
 /**
+ * @method 自定义协议目录
+ *
+ * @return [type]       [description]
+ */
+function protocols_path()
+{
+    return BASE_PATH . DS . 'Protocols';
+}
+
+/**
  * @method 加载文件
  *
  * @param  string $path [description]
@@ -208,4 +218,22 @@ function cpu_count()
     }
     $count = (int)$count > 0 ? (int)$count : 4;
     return $count;
+}
+
+/**
+ * 字符串编码转UTF-8
+ *
+ * @Author    HSK
+ * @DateTime  2020-09-17 10:22:34
+ *
+ * @return void
+ */
+function str_to_utf8($str)
+{
+    $encode = mb_detect_encoding($str, array("ASCII", 'UTF-8', "GB2312", "GBK", 'BIG5'));
+    if ($encode == 'UTF-8') {
+        return $str;
+    } else {
+        return mb_convert_encoding($str, 'UTF-8', $encode);
+    }
 }

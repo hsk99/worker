@@ -18,10 +18,10 @@ class Db
      *
      * @return [type]           [description]
      */
-    public static function connect ()
+    public static function connect()
     {
         $mysql_config = config('mysql');
-        
+
         foreach ($mysql_config as $name => $config) {
             if (!$config['connect']) {
                 continue;
@@ -42,7 +42,7 @@ class Db
      * @param  string $db_name [description]
      * @return [type]          [description]
      */
-    public static function get ($db_name = '')
+    public static function get($db_name = '')
     {
         if (empty($db_name)) {
             throw new Exception("Parameter error");
