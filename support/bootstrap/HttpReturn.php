@@ -4,15 +4,25 @@ namespace support\bootstrap;
 
 use Workerman\Protocols\Http\Response;
 
+/**
+ * Workerman Http协议数据输出
+ *
+ * @Author    HSK
+ * @DateTime  2020-10-22 17:22:33
+ */
 class HttpReturn
 {
     /**
-     * @method 返回任意响应
+     * 返回任意响应
      *
-     * @param  string   $body    [description]
-     * @param  integer  $status  [description]
-     * @param  array    $headers [description]
-     * @return [type]            [description]
+     * @Author    HSK
+     * @DateTime  2020-10-22 17:23:10
+     *
+     * @param string $body
+     * @param int $status
+     * @param array $headers
+     *
+     * @return void
      */
     public static function response($body = '', $status = 200, $headers = array())
     {
@@ -20,11 +30,15 @@ class HttpReturn
     }
 
     /**
-     * @method 返回JSON
+     * 返回JSON
      *
-     * @param  [type] $data    [description]
-     * @param  [type] $options [description]
-     * @return [type]          [description]
+     * @Author    HSK
+     * @DateTime  2020-10-22 17:23:20
+     *
+     * @param [type] $data
+     * @param [type] $options
+     *
+     * @return void
      */
     public static function json($data, $options = JSON_UNESCAPED_UNICODE)
     {
@@ -32,10 +46,14 @@ class HttpReturn
     }
 
     /**
-     * @method 返回XML
+     * 返回XML
      *
-     * @param  [type] $xml [description]
-     * @return [type]      [description]
+     * @Author    HSK
+     * @DateTime  2020-10-22 17:23:27
+     *
+     * @param [type] $xml
+     *
+     * @return void
      */
     public static function xml($xml)
     {
@@ -46,11 +64,15 @@ class HttpReturn
     }
 
     /**
-     * @method 返回JSONP
+     * 返回JSONP
      *
-     * @param  [type] $data          [description]
-     * @param  string $callback_name [description]
-     * @return [type]                [description]
+     * @Author    HSK
+     * @DateTime  2020-10-22 17:23:33
+     *
+     * @param [type] $data
+     * @param string $callback_name
+     *
+     * @return void
      */
     public static function jsonp($data, $callback_name = 'callback')
     {
@@ -61,12 +83,16 @@ class HttpReturn
     }
 
     /**
-     * @method 重定向
+     * 重定向
      *
-     * @param  [type]   $location [description]
-     * @param  integer  $status   [description]
-     * @param  array    $headers  [description]
-     * @return [type]             [description]
+     * @Author    HSK
+     * @DateTime  2020-10-22 17:23:39
+     *
+     * @param [type] $location
+     * @param int $status
+     * @param array $headers
+     *
+     * @return void
      */
     public static function redirect($location, $status = 302, $headers = [])
     {

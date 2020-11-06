@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Timer\{_process_};
+
+class Test
+{
+    /**
+     * 是否运行
+     * @var boolean
+     */
+    public static $run = false;
+    
+    /**
+     * 间隔时间
+     * @var integer
+     */
+    public static $interval = 3;
+    
+    /**
+     * 是否是持久的
+     * @var boolean
+     */
+    public static $persistent = true;
+    
+    /**
+     * @method init
+     *
+     * @param  [type] $timer_id [定时器ID]
+     * @return [type]           [description]
+     */
+    public static function init($timer_id)
+    {
+        var_dump($timer_id);
+    }
+}

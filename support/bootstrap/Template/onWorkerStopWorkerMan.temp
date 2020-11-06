@@ -1,0 +1,13 @@
+<?php
+
+namespace App\Callback\{_process_};
+
+use GatewayWorker\Lib\Gateway;
+
+class onWorkerStop
+{
+    public static function init($worker)
+    {
+        
+    }
+}

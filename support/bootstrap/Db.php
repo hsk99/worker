@@ -28,6 +28,7 @@ class Db
             }
 
             if (empty($config['host']) || empty($config['user']) || empty($config['dbname'])) {
+                throw new Exception("MySql connection information is incomplete");
                 continue;
             }
 

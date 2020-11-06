@@ -4,20 +4,31 @@ namespace support\bootstrap;
 
 use Workerman\lib\Timer;
 
+/**
+ * 加载定时任务
+ *
+ * @Author    HSK
+ * @DateTime  2020-10-22 17:19:43
+ */
 class LoadTimer
 {
     /**
      * 当前使用进程
-     * @var integer
+     *
+     * @var int
      */
     protected static $worker_id = 0;
 
     /**
-     * @method 加载定时任务
-     *  
-     * @param  string  $worker [description]
-     * @param  boolean $type   [description]
-     * @return [type]          [description]
+     * 加载定时任务
+     *
+     * @Author    HSK
+     * @DateTime  2020-10-22 17:19:57
+     *
+     * @param string $worker
+     * @param bool $type
+     *
+     * @return void
      */
     public static function load($worker = '', $type = false)
     {

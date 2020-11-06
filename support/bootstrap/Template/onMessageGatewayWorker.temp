@@ -1,0 +1,104 @@
+<?php
+
+namespace App\Callback\{_process_};
+
+use GatewayWorker\Lib\Gateway;
+
+class onMessage
+{
+    public static function init($client_id, $message)
+    {
+        $message_data = json_decode($message, true);
+        if (empty($message_data) || !is_array($message_data)) {
+            Gateway::sendToClient($client_id, json(['type' => 'error', 'msg' => '非法操作，传输数据不是JSON格式']));
+            return;
+        }
+
+        if (!empty($message_data['type']) && !is_array($message_data['type'])) {
+            self::singleRequest($client_id, $message_data);
+        } else {
+            self::multipleRequest($client_id, $message_data);
+        }
+    }
+
+    protected static function singleRequest($client_id, $message_data)
+    {
+        $type  = $message_data['type'];
+        $piece = count(explode('.', $type));
+
+        switch ($piece) {
+            case '1':
+                $module     = "";
+                $controller = parse_name($type, 1);
+                $action     = parse_name($type, 1, false);
+                break;
+            case '2':
+                list($controller, $action) = explode('.', $type, 2);
+                $module     = "";
+                $controller = parse_name($controller, 1);
+                $action     = parse_name($action, 1, false);
+                break;
+            case '3':
+                list($module, $controller, $action) = explode('.', $type, 3);
+                $module     = "\\" . parse_name($module, 1);
+                $controller = parse_name($controller, 1);
+                $action     = parse_name($action, 1, false);
+                break;
+            default:
+                $module = $controller = $action = "";
+                break;
+        }
+
+        if (!empty($controller) && !empty($action) && is_callable("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")) {
+            $result = ("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")($client_id, $message_data);
+        } else {
+            $result = ['code' => 400, 'msg' => '非法操作，方法不存在'];
+        }
+        $result['type'] = $type;
+
+        Gateway::sendToClient($client_id, json($result));
+    }
+
+    protected static function multipleRequest($client_id, $message_data)
+    {
+        foreach ($message_data as $type => $data) {
+            if (empty($data['cmd_sequence'])) {
+                $return[$type] = ['code' => 400, 'msg' => '非法操作，指令序列号不存在'];
+                continue;
+            }
+
+            $piece = count(explode('.', $type));
+            switch ($piece) {
+                case '1':
+                    $module     = "";
+                    $controller = parse_name($type, 1);
+                    $action     = parse_name($type, 1, false);
+                    break;
+                case '2':
+                    list($controller, $action) = explode('.', $type, 2);
+                    $module     = "";
+                    $controller = parse_name($controller, 1);
+                    $action     = parse_name($action, 1, false);
+                    break;
+                case '3':
+                    list($module, $controller, $action) = explode('.', $type, 3);
+                    $module     = "\\" . parse_name($module, 1);
+                    $controller = parse_name($controller, 1);
+                    $action     = parse_name($action, 1, false);
+                    break;
+                default:
+                    $module = $controller = $action = "";
+                    break;
+            }
+
+            if (!empty($controller) && !empty($action) && is_callable("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")) {
+                $result = ("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")($client_id, $data);
+                $return[$type] = array_merge(['cmd_sequence' => $data['cmd_sequence']], $result);
+            } else {
+                $return[$type] = ['code' => 400, 'msg' => '非法操作，方法不存在'];
+            }
+        }
+
+        Gateway::sendToClient($client_id, json($return));
+    }
+}

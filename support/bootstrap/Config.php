@@ -6,16 +6,21 @@ class Config
 {
     /**
      * 记录信息
+     *
      * @var array
      */
     protected static $_config = [];
 
     /**
-     * @method 记录
-     *  
-     * @param  [type] $config_path  [description]
-     * @param  array  $exclude_file [description]
-     * @return [type]               [description]
+     * 记录
+     *
+     * @Author    HSK
+     * @DateTime  2020-10-22 17:20:17
+     *
+     * @param [type] $config_path
+     * @param array $exclude_file
+     *
+     * @return void
      */
     public static function load($config_path, $exclude_file = [])
     {
@@ -30,11 +35,15 @@ class Config
     }
 
     /**
-     * @method 读取
-     *  
-     * @param  [type] $key     [description]
-     * @param  [type] $default [description]
-     * @return [type]          [description]
+     * 读取
+     *
+     * @Author    HSK
+     * @DateTime  2020-10-22 17:20:24
+     *
+     * @param [type] $key
+     * @param [type] $default
+     *
+     * @return void
      */
     public static function get($key = null, $default = null)
     {
@@ -53,11 +62,15 @@ class Config
     }
 
     /**
-     * @method 刷新
-     *  
-     * @param  [type] $config_path  [description]
-     * @param  array  $exclude_file [description]
-     * @return [type]               [description]
+     * 刷新
+     *
+     * @Author    HSK
+     * @DateTime  2020-10-22 17:20:30
+     *
+     * @param [type] $config_path
+     * @param array $exclude_file
+     *
+     * @return void
      */
     public static function reload($config_path, $exclude_file = [])
     {

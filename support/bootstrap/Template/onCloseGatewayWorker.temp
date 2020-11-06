@@ -1,0 +1,13 @@
+<?php
+
+namespace App\Callback\{_process_};
+
+use GatewayWorker\Lib\Gateway;
+
+class onClose
+{
+    public static function init($client_id)
+    {
+        
+    }
+}

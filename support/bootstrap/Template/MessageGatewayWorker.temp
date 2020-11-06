@@ -1,0 +1,13 @@
+<?php
+
+namespace App\Message\{_process_};
+
+use GatewayWorker\Lib\Gateway;
+
+class Index
+{
+    public static function index($client_id, $message_data)
+    {
+        return ['code' => 200, 'msg' => 'success', 'data' => 'Index'];
+    }
+}

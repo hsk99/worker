@@ -1,0 +1,11 @@
+<?php
+
+namespace App\Callback\{_process_};
+
+class onBufferDrain
+{
+    public static function init($connection)
+    {
+        
+    }
+}

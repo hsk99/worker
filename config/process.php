@@ -2,7 +2,7 @@
 
 return [
 	/**
-	 * Workerman进程
+	 * Workerman
 	 */
 	'workerman' => [
 		'timer'  => [
@@ -16,7 +16,14 @@ return [
 			'count'    => 1,
 			'callback' => [
 				'onWorkerStart',
+				'onWorkerReload',
+				'onConnect',
 				'onMessage',
+				'onClose',
+				'onError',
+				'onBufferFull',
+				'onBufferDrain',
+				'onWorkerStop'
 			],
 			'session'  => [
 				'session_name' => 'PHPSID',
@@ -38,7 +45,7 @@ return [
 		],
 	],
 	/**
-     * GatewayWorker进程
+     * GatewayWorker
      */
 	'gateway_worker' => [
 		'tcp' => [
@@ -47,14 +54,17 @@ return [
 			'count'          => 1,
 			'lan_ip'         => '127.0.0.1',
 			'start_port'     => 11100,
-			'pinginterval'   => 10,
+			'pinginterval'   => 50,
 			'pingdata'       => '{"type":"ping"}',
 			'register'       => '127.0.0.1:11200',
 			'business_count' => 1,
 			'callback'       => [
 				'onWorkerStart',
 				'onConnect',
+				'onWebSocketConnect',
 				'onMessage',
+				'onClose',
+				'onWorkerStop'
 			]
 		],
 		'websocket' => [
@@ -63,19 +73,22 @@ return [
 			'count'          => 1,
 			'lan_ip'         => '127.0.0.1',
 			'start_port'     => 11300,
-			'pinginterval'   => 10,
+			'pinginterval'   => 50,
 			'pingdata'       => '{"type":"ping"}',
 			'register'       => '127.0.0.1:11400',
 			'business_count' => 1,
 			'callback'       => [
 				'onWorkerStart',
+				'onConnect',
 				'onWebSocketConnect',
 				'onMessage',
+				'onClose',
+				'onWorkerStop'
 			]
 		]
 	],
 	/**
-     * GlobalData 进程
+     * GlobalData
      */
 	'global_data' => [
 		'config'  => [
@@ -84,7 +97,7 @@ return [
 		]
 	],
 	/**
-     * Channel 进程
+     * Channel
      */
 	'channel' => [
 		'push'  => [

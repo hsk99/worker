@@ -1,0 +1,17 @@
+<?php
+
+namespace App\Callback\{_process_};
+
+use support\bootstrap\Db;
+use support\bootstrap\Redis;
+use support\bootstrap\LoadTimer;
+
+class onWorkerStart
+{
+    public static function init($worker)
+    {
+        Db::connect();
+        Redis::connect();
+        LoadTimer::load($worker);
+    }
+}
