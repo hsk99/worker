@@ -51,6 +51,9 @@ class onMessage
 
         if (!empty($controller) && !empty($action) && is_callable("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")) {
             $result = ("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")($client_id, $message_data);
+            if (empty($result)) {
+                return;
+            }
         } else {
             $result = ['code' => 400, 'msg' => '非法操作，方法不存在'];
         }
@@ -93,6 +96,9 @@ class onMessage
 
             if (!empty($controller) && !empty($action) && is_callable("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")) {
                 $result = ("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")($client_id, $data);
+                if (empty($result)) {
+                    return;
+                }
                 $return[$type] = array_merge(['cmd_sequence' => $data['cmd_sequence']], $result);
             } else {
                 $return[$type] = ['code' => 400, 'msg' => '非法操作，方法不存在'];

@@ -8,6 +8,10 @@ class Events
 
     public static function onWorkerStart($businessWorker)
     {
+        foreach (config('autoload.files', []) as $file) {
+            include_once $file;
+        }
+        
         self::$worker_name = parse_name($businessWorker->name, 1);
 
         if (is_callable("\\App\\Callback\\" . self::$worker_name . "\\onWorkerStart::init")) {

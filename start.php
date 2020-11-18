@@ -37,6 +37,10 @@ Worker::$pidFile                      = runtime_path() . '/workerman.pid';
 Worker::$stdoutFile                   = runtime_path() . '/stdout.log';
 TcpConnection::$defaultMaxPackageSize = 10 * 1024 * 1024;
 
+Worker::$onMasterReload = function () {
+    Config::reload(config_path());
+};
+
 $process = config('process', []);
 
 if (!empty($process['workerman']) && !empty($process['gateway_worker'])) {
@@ -66,6 +70,10 @@ if (!empty($process['workerman'])) {
         }
         $worker->config = $config;
         $worker->onWorkerStart = function ($worker) {
+            foreach (config('autoload.files', []) as $file) {
+                include_once $file;
+            }
+
             if (in_array($worker->protocol, ["\Workerman\Protocols\Http", "Workerman\Protocols\Http"])) {
                 $session      = $worker->config['session'] ?? [];
                 $type         = $session['type'] ?? 'file';

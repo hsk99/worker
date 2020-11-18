@@ -132,6 +132,9 @@ if (!empty($process['workerman'])) {
         
         $str .= "\$worker->config         = '".serialize($config)."';\n";
         $str .= "\$worker->onWorkerStart = function (\$worker) {\n";
+        $str .= "    foreach (config('autoload.files', []) as \$file) {\n";
+        $str .= "        include_once \$file;\n";
+        $str .= "    }\n";
         $str .= "    \$worker->config = unserialize(\$worker->config);\n";
         $str .= "    if (in_array(\$worker->protocol, [\"\\Workerman\\Protocols\\Http\", \"Workerman\\Protocols\\Http\"])) {\n";
         $str .= "        \$session      = \$worker->config['session'] ?? [];\n";
