@@ -3,7 +3,7 @@
 return [
 	'queue' => [
 		// 是否连接Redis
-	    "connect"  => true,
+	    "connect"  => false,
 	    // 服务器地址
 	    "host"     => '127.0.0.1',
 	    // 端口
