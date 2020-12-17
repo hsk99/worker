@@ -99,7 +99,7 @@ class onMessage
 
         if (!empty($controller) && !empty($action) && is_callable("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")) {
             if (is_callable("\\App\\Message\\{_process_}\\Auth::check")) {
-                $check = ("\\App\\Message\\{_process_}\\Auth::check")($connection, $message_data);
+                $check = ("\\App\\Message\\{_process_}\\Auth::check")($connection, $message_data, $type, $module, $controller, $action);
                 if (!empty($check) && $check['code'] == 400) {
                     $connection->send(json(['type' => 'error', 'msg' => $check['msg']]));
                     return;
@@ -152,7 +152,7 @@ class onMessage
 
             if (!empty($controller) && !empty($action) && is_callable("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")) {
                 if (is_callable("\\App\\Message\\{_process_}\\Auth::check")) {
-                    $check = ("\\App\\Message\\{_process_}\\Auth::check")($connection, $data);
+                    $check = ("\\App\\Message\\{_process_}\\Auth::check")($connection, $data, $type, $module, $controller, $action);
                     if (!empty($check) && $check['code'] == 400) {
                         $connection->send(json(['type' => 'error', 'msg' => $check['msg']]));
                         return;
