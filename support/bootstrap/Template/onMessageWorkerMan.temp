@@ -107,7 +107,7 @@ class onMessage
             }
 
             $return = ("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")($connection, $message_data);
-            if (empty($result)) {
+            if (empty($return)) {
                 return;
             }
         } else {
