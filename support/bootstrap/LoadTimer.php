@@ -44,11 +44,11 @@ class LoadTimer
             }
 
             if ($type == false) {
-                $timer_id = Timer::add($class::$interval, [$class, 'init'], [&$timer_id], $class::$persistent);
+                $timer_id = Timer::add($class::$interval, [$class, 'init'], [&$timer_id, &$worker], $class::$persistent);
                 unset($timer_id);
             } else {
                 if ($worker->id == self::$worker_id) {
-                    $timer_id = Timer::add($class::$interval, [$class, 'init'], [&$timer_id], $class::$persistent);
+                    $timer_id = Timer::add($class::$interval, [$class, 'init'], [&$timer_id, &$worker], $class::$persistent);
                     unset($timer_id);
                 }
 

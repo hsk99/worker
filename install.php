@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 require_once __DIR__ . '/support/helpers.php';
 
@@ -18,10 +18,14 @@ if (!is_dir(base_path() . DS . 'win')) {
     mkdir(base_path() . DS . 'win', 0777, true);
 }
 
-$process = config('process', []);
+$workerman_process      = config('workerman', []);
+$gateway_worker_process = config('gateway_worker', []);
+$global_data_process    = config('global_data', []);
+$channel_process        = config('channel', []);
+$async_process          = config('async', []);
 
-if (!empty($process['workerman']) && !empty($process['gateway_worker'])) {
-    $worker_names = array_merge(array_keys($process['workerman']), array_keys($process['gateway_worker']));
+if (!empty($workerman_process) && !empty($gateway_worker_process)) {
+    $worker_names = array_merge(array_keys($workerman_process), array_keys($gateway_worker_process));
     if (count($worker_names) != count(array_unique($worker_names))) {
         throw new Exception("There are duplicates in the process names of WorkerMan and GatewayWorker");
     }
@@ -53,37 +57,37 @@ $str .= "Worker::\$logFile                      = runtime_path(). '/workerman.lo
 $str .= "Worker::\$pidFile                      = runtime_path(). '/workerman.pid';\n";
 $str .= "Worker::\$stdoutFile                   = runtime_path(). '/stdout.log';\n";
 $str .= "\n";
-if (!empty($process['gateway_worker'])) {
-	foreach ($process['gateway_worker'] as $process_name => $config) {
+if (!empty($gateway_worker_process)) {
+    foreach ($gateway_worker_process as $process_name => $config) {
         $process_name = parse_name($process_name, 1);
         $register     = $config['register'] ?? '';
 
         $str .= "if (!defined('{$process_name}Register')) {\n";
-		$str .= "    define('{$process_name}Register', '{$register}');\n";
+        $str .= "    define('{$process_name}Register', '{$register}');\n";
         $str .= "}\n";
-		$str .= "\n";
+        $str .= "\n";
     }
 }
-if (!empty($process['global_data'])) {
-	foreach ($process['global_data'] as $process_name => $config) {
+if (!empty($global_data_process)) {
+    foreach ($global_data_process as $process_name => $config) {
         $process_name = parse_name($process_name, 1);
         $str .= "if (!defined('GlobalData{$process_name}')) {\n";
-		$str .= "    define('GlobalData{$process_name}', '{$config['listen_ip']}:{$config['listen_port']}');\n";
-		$str .= "}\n";
-		$str .= "\n";
+        $str .= "    define('GlobalData{$process_name}', '{$config['listen_ip']}:{$config['listen_port']}');\n";
+        $str .= "}\n";
+        $str .= "\n";
     }
 }
-if (!empty($process['channel'])) {
-	foreach ($process['channel'] as $process_name => $config) {
+if (!empty($channel_process)) {
+    foreach ($channel_process as $process_name => $config) {
         $process_name = parse_name($process_name, 1);
         $str .= "if (!defined('Channel{$process_name}Ip')) {\n";
-		$str .= "    define('Channel{$process_name}Ip', '{$config['listen_ip']}');\n";
-		$str .= "}\n";
-		$str .= "\n";
-		$str .= "if (!defined('Channel{$process_name}Port')) {\n";
-		$str .= "    define('Channel{$process_name}Port', '{$config['listen_port']}');\n";
-		$str .= "}\n";
-		$str .= "\n";
+        $str .= "    define('Channel{$process_name}Ip', '{$config['listen_ip']}');\n";
+        $str .= "}\n";
+        $str .= "\n";
+        $str .= "if (!defined('Channel{$process_name}Port')) {\n";
+        $str .= "    define('Channel{$process_name}Port', '{$config['listen_port']}');\n";
+        $str .= "}\n";
+        $str .= "\n";
     }
 }
 
@@ -94,43 +98,43 @@ if (!$ok) {
 
 $bat = "CHCP 65001\nphp";
 
-if (!empty($process['workerman'])) {
-    foreach ($process['workerman'] as $process_name => $config) {
+if (!empty($workerman_process)) {
+    foreach ($workerman_process as $process_name => $config) {
         $process_name = parse_name($process_name, 1);
         $listen       = $config['listen'] ?? null;
 
         $str = "<?php \n";
         $str .= "\n";
-		$str .= "require_once __DIR__ . '/loader.php';\n";
+        $str .= "require_once __DIR__ . '/loader.php';\n";
         $str .= "\n";
         $str .= "use support\bootstrap\CreateFile;\n";
-		$str .= "use Workerman\Worker;\n";
+        $str .= "use Workerman\Worker;\n";
         $str .= "use Workerman\Connection\TcpConnection;\n";
         $str .= "use Workerman\Protocols\Http;\n";
         $str .= "use Workerman\Protocols\Http\Session;\n";
         $str .= "use Workerman\Protocols\Http\Session\FileSessionHandler;\n";
         $str .= "use Workerman\Protocols\Http\Session\RedisSessionHandler;\n";
-		$str .= "\n";
-		$str .= "TcpConnection::\$defaultMaxPackageSize = 10*1024*1024;\n";
+        $str .= "\n";
+        $str .= "TcpConnection::\$defaultMaxPackageSize = 10*1024*1024;\n";
         $str .= "\n";
         $str .= "\$worker                 = new Worker(\"" . $listen . "\");\n";
-		$str .= "\$worker->name           = '$process_name';\n";
+        $str .= "\$worker->name           = '$process_name';\n";
 
-		$property_map = [
-			'count'      => "\$worker->count          = ",
-			'user'       => "\$worker->user           = ",
-			'group'      => "\$worker->group          = ",
-			'reloadable' => "\$worker->reloadable     = ",
-			'reusePort'  => "\$worker->reusePort      = ",
-			'transport'  => "\$worker->transport      = ",
+        $property_map = [
+            'count'      => "\$worker->count          = ",
+            'user'       => "\$worker->user           = ",
+            'group'      => "\$worker->group          = ",
+            'reloadable' => "\$worker->reloadable     = ",
+            'reusePort'  => "\$worker->reusePort      = ",
+            'transport'  => "\$worker->transport      = ",
         ];
         foreach ($property_map as $property => $parameter) {
             if (isset($config[$property])) {
                 $str .= $parameter . $config[$property] . ";\n";
             }
         }
-        
-        $str .= "\$worker->config         = '".serialize($config)."';\n";
+
+        $str .= "\$worker->config         = '" . serialize($config) . "';\n";
         $str .= "\$worker->onWorkerStart = function (\$worker) {\n";
         $str .= "    foreach (config('autoload.files', []) as \$file) {\n";
         $str .= "        include_once \$file;\n";
@@ -161,17 +165,17 @@ if (!empty($process['workerman'])) {
         $str .= "};\n";
 
         $callback_map = [
-			'onWorkerReload' => "\$worker->onWorkerReload = ",
-			'onConnect'      => "\$worker->onConnect      = ",
-			'onMessage'      => "\$worker->onMessage      = ",
-			'onClose'        => "\$worker->onClose        = ",
-			'onError'        => "\$worker->onError        = ",
-			'onBufferFull'   => "\$worker->onBufferFull   = ",
-			'onBufferDrain'  => "\$worker->onBufferDrain  = ",
-			'onWorkerStop'   => "\$worker->onWorkerStop   = ",
+            'onWorkerReload' => "\$worker->onWorkerReload = ",
+            'onConnect'      => "\$worker->onConnect      = ",
+            'onMessage'      => "\$worker->onMessage      = ",
+            'onClose'        => "\$worker->onClose        = ",
+            'onError'        => "\$worker->onError        = ",
+            'onBufferFull'   => "\$worker->onBufferFull   = ",
+            'onBufferDrain'  => "\$worker->onBufferDrain  = ",
+            'onWorkerStop'   => "\$worker->onWorkerStop   = ",
         ];
         foreach ($callback_map as $name => $parameter) {
-            if (!in_array($name, $config['callback'])) {
+            if (!in_array($name, $config['callback'] ?? [])) {
                 continue;
             }
             if (!method_exists("\\App\\Callback\\{$process_name}\\{$name}", "init")) {
@@ -181,9 +185,9 @@ if (!empty($process['workerman'])) {
         }
 
         $str .= "\n";
-		$str .= "Worker::runAll();\n";
-        
-        
+        $str .= "Worker::runAll();\n";
+
+
         $ok = file_put_contents(base_path() . DS . 'win' . DS . $process_name . ".php", $str);
         if (!$ok) {
             exit("Failed to create file");
@@ -192,15 +196,15 @@ if (!empty($process['workerman'])) {
     }
 }
 
-if (!empty($process['gateway_worker'])) {
+if (!empty($gateway_worker_process)) {
     if (!method_exists("\\App\\Callback\\Events", "onWorkerStart")) {
         CreateFile::Events();
     }
 
-    foreach ($process['gateway_worker'] as $process_name => $config) {
-		$process_name = parse_name($process_name, 1);
-		$listen       = $config['listen'] ?? null;
-		$transport    = $config['transport'] ?? 'tcp';
+    foreach ($gateway_worker_process as $process_name => $config) {
+        $process_name = parse_name($process_name, 1);
+        $listen       = $config['listen'] ?? null;
+        $transport    = $config['transport'] ?? 'tcp';
 
         $callback_map = [
             'onWorkerStart',
@@ -291,21 +295,21 @@ if (!empty($process['gateway_worker'])) {
     }
 }
 
-if (!empty($process['global_data'])) {
-    foreach ($process['global_data'] as $process_name => $config) {
-		$process_name = parse_name($process_name, 1);
+if (!empty($global_data_process)) {
+    foreach ($global_data_process as $process_name => $config) {
+        $process_name = parse_name($process_name, 1);
 
         $str = "<?php \n";
         $str .= "\n";
-		$str .= "require_once __DIR__ . '/loader.php';\n";
-		$str .= "\n";
-		$str .= "use Workerman\Worker;\n";
+        $str .= "require_once __DIR__ . '/loader.php';\n";
+        $str .= "\n";
+        $str .= "use Workerman\Worker;\n";
         $str .= "\n";
         $str .= "new GlobalData\Server('" . $config['listen_ip'] . "', {$config['listen_port']});\n";
         $str .= "\n";
-		$str .= "Worker::runAll();\n";
-        
-        
+        $str .= "Worker::runAll();\n";
+
+
         $ok = file_put_contents(base_path() . DS . 'win' . DS . "GlobalData" . $process_name . ".php", $str);
         if (!$ok) {
             exit("Failed to create file");
@@ -314,27 +318,94 @@ if (!empty($process['global_data'])) {
     }
 }
 
-if (!empty($process['channel'])) {
-    foreach ($process['channel'] as $process_name => $config) {
-		$process_name = parse_name($process_name, 1);
+if (!empty($channel_process)) {
+    foreach ($channel_process as $process_name => $config) {
+        $process_name = parse_name($process_name, 1);
 
         $str = "<?php \n";
         $str .= "\n";
-		$str .= "require_once __DIR__ . '/loader.php';\n";
-		$str .= "\n";
-		$str .= "use Workerman\Worker;\n";
+        $str .= "require_once __DIR__ . '/loader.php';\n";
+        $str .= "\n";
+        $str .= "use Workerman\Worker;\n";
         $str .= "\n";
         $str .= "new Channel\Server('" . $config['listen_ip'] . "', {$config['listen_port']});\n";
         $str .= "\n";
-		$str .= "Worker::runAll();\n";
-        
-        
+        $str .= "Worker::runAll();\n";
+
+
         $ok = file_put_contents(base_path() . DS . 'win' . DS . "Channel" . $process_name . ".php", $str);
         if (!$ok) {
             exit("Failed to create file");
         }
         $bat .= " " . 'win' . DS . "Channel" . $process_name . ".php";
     }
+}
+
+if (!empty($async_process['client'])) {
+    $redis = $async_process['config'];
+
+    $str = "<?php \n";
+    $str .= "\n";
+    $str .= "require_once __DIR__ . '/loader.php';\n";
+    $str .= "\n";
+    $str .= "use support\bootstrap\CreateFile;\n";
+    $str .= "use Workerman\Worker;\n";
+    $str .= "use Workerman\Lib\Timer;\n";
+    $str .= "use Workerman\Connection\AsyncTcpConnection;\n";
+    $str .= "\n";
+    $str .= "\$worker        = new Worker();\n";
+    $str .= "\$worker->count = 1;\n";
+    $str .= "\$worker->name  = 'Async';\n";
+    $str .= "\$worker->onWorkerStart = function (\$worker) {\n";
+    $str .= "    \$queue = new \Workerman\RedisQueue\Client('redis://{$redis['host']}:{$redis['port']}', ['auth' => '{$redis['password']}']);\n";
+    $str .= "    \n";
+
+    foreach ($async_process['client'] as $process_name => $config) {
+        $process_name = parse_name($process_name, 1);
+
+        $str .= "    \$worker->{$process_name}_config = '" . serialize($config) . "';\n";
+        $str .= "    Timer::add(1, function () use (&\$worker, &\$queue) {\n";
+        $str .= "        \$config             = unserialize(\$worker->{$process_name}_config );\n";
+        $str .= "        \${$process_name}                = new AsyncTcpConnection(\$config['listen'], \$config['context'] ?? []);\n";
+        $str .= "        \${$process_name}->transport     = \$config['transport'] ?? 'tcp';\n";
+
+        $callback_map = [
+            'onConnect'      => "\${$process_name}->onConnect     = ",
+            'onMessage'      => "\${$process_name}->onMessage     = ",
+            'onClose'        => "\${$process_name}->onClose       = ",
+            'onError'        => "\${$process_name}->onError       = ",
+            'onBufferFull'   => "\${$process_name}->onBufferFull  = ",
+            'onBufferDrain'  => "\${$process_name}->onBufferDrain = ",
+        ];
+        foreach ($callback_map as $name => $parameter) {
+            if (!in_array($name, $config['callback'] ?? [])) {
+                continue;
+            }
+            if (!method_exists("\\App\\Callback\\Async{$process_name}\\{$name}", "init")) {
+                CreateFile::create("\\App\\Callback\\Async{$process_name}\\{$name}", "Async");
+            }
+            $str .= "        " . $parameter . '["\\\\App\\\\Callback\\\\Async' . $process_name . '\\\\' . $name . '", "init"]' . ";\n";
+        }
+
+        $str .= "        \${$process_name}->queue         = \$queue;\n";
+        $str .= "        \${$process_name}->connect();\n";
+        $str .= "    }, '', false);\n";
+        $str .= "    \n";
+    }
+
+
+
+    $str .= "};\n";
+    $str .= "\n";
+
+    $str .= "Worker::runAll();\n";
+
+
+    $ok = file_put_contents(base_path() . DS . 'win' . DS . "Async.php", $str);
+    if (!$ok) {
+        exit("Failed to create file");
+    }
+    $bat .= " " . 'win' . DS . "Async.php";
 }
 
 $ok = file_put_contents(base_path() . DS . "start.bat", $bat);

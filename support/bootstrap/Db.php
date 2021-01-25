@@ -32,8 +32,12 @@ class Db
                 continue;
             }
 
-            $connection = new Connection($config['host'], $config['port'], $config['user'], $config['password'], $config['dbname']);
-            self::$_connection[$name] = $connection;
+            try {
+                $connection = new Connection($config['host'], $config['port'], $config['user'], $config['password'], $config['dbname']);
+                self::$_connection[$name] = $connection;
+            } catch (\Throwable $th) {
+                throw new Exception($th->getMessage());
+            }
         }
     }
 

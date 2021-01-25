@@ -12,14 +12,16 @@ require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/support/helpers.php';
 
 use Workerman\Worker;
+use Workerman\Lib\Timer;
+use Workerman\Protocols\Http;
+use Workerman\Protocols\Http\Session;
 use Workerman\Connection\TcpConnection;
+use Workerman\Connection\AsyncTcpConnection;
+use Workerman\Protocols\Http\Session\FileSessionHandler;
+use Workerman\Protocols\Http\Session\RedisSessionHandler;
 use GatewayWorker\Gateway;
 use GatewayWorker\Register;
 use GatewayWorker\BusinessWorker;
-use Workerman\Protocols\Http;
-use Workerman\Protocols\Http\Session;
-use Workerman\Protocols\Http\Session\FileSessionHandler;
-use Workerman\Protocols\Http\Session\RedisSessionHandler;
 use support\bootstrap\Config;
 use support\bootstrap\CreateFile;
 
@@ -41,17 +43,21 @@ Worker::$onMasterReload = function () {
     Config::reload(config_path());
 };
 
-$process = config('process', []);
+$workerman_process      = config('workerman', []);
+$gateway_worker_process = config('gateway_worker', []);
+$global_data_process    = config('global_data', []);
+$channel_process        = config('channel', []);
+$async_process          = config('async', []);
 
-if (!empty($process['workerman']) && !empty($process['gateway_worker'])) {
-    $worker_names = array_merge(array_keys($process['workerman']), array_keys($process['gateway_worker']));
+if (!empty($workerman_process) && !empty($gateway_worker_process)) {
+    $worker_names = array_merge(array_keys($workerman_process), array_keys($gateway_worker_process));
     if (count($worker_names) != count(array_unique($worker_names))) {
         throw new Exception("There are duplicates in the process names of WorkerMan and GatewayWorker");
     }
 }
 
-if (!empty($process['workerman'])) {
-    foreach ($process['workerman'] as $process_name => $config) {
+if (!empty($workerman_process)) {
+    foreach ($workerman_process as $process_name => $config) {
         $process_name = parse_name($process_name, 1);
         $worker       = new Worker($config['listen'] ?? null, $config['context'] ?? []);
         $property_map = [
@@ -90,7 +96,7 @@ if (!empty($process['workerman'])) {
                         break;
                 }
             }
-            if (in_array('onWorkerStart', $worker->config['callback'])) {
+            if (in_array('onWorkerStart', $worker->config['callback'] ?? [])) {
                 if (!method_exists("\\App\\Callback\\{$worker->name}\\onWorkerStart", "init")) {
                     CreateFile::create("\\App\\Callback\\{$worker->name}\\onWorkerStart", "WorkerMan");
                 }
@@ -108,7 +114,7 @@ if (!empty($process['workerman'])) {
             'onWorkerStop'
         ];
         foreach ($callback_map as $name) {
-            if (!in_array($name, $config['callback'])) {
+            if (!in_array($name, $config['callback'] ?? [])) {
                 continue;
             }
             if (!method_exists("\\App\\Callback\\{$process_name}\\{$name}", "init")) {
@@ -119,12 +125,12 @@ if (!empty($process['workerman'])) {
     }
 }
 
-if (!empty($process['gateway_worker'])) {
+if (!empty($gateway_worker_process)) {
     if (!method_exists("\\App\\Callback\\Events", "onWorkerStart")) {
         CreateFile::Events();
     }
 
-    foreach ($process['gateway_worker'] as $process_name => $config) {
+    foreach ($gateway_worker_process as $process_name => $config) {
         $process_name = parse_name($process_name, 1);
 
         $callback_map = [
@@ -175,8 +181,8 @@ if (!empty($process['gateway_worker'])) {
     }
 }
 
-if (!empty($process['global_data'])) {
-    foreach ($process['global_data'] as $process_name => $config) {
+if (!empty($global_data_process)) {
+    foreach ($global_data_process as $process_name => $config) {
         $process_name = parse_name($process_name, 1);
 
         new GlobalData\Server($config['listen_ip'], $config['listen_port']);
@@ -187,8 +193,8 @@ if (!empty($process['global_data'])) {
     }
 }
 
-if (!empty($process['channel'])) {
-    foreach ($process['channel'] as $process_name => $config) {
+if (!empty($channel_process)) {
+    foreach ($channel_process as $process_name => $config) {
         $process_name = parse_name($process_name, 1);
 
         new Channel\Server($config['listen_ip'], $config['listen_port']);
@@ -200,6 +206,45 @@ if (!empty($process['channel'])) {
             define("Channel" . $process_name . "Port", $config['listen_port']);
         }
     }
+}
+
+if (!empty($async_process['client'])) {
+    $worker        = new Worker();
+    $worker->count = 1;
+    $worker->name  = 'Async';
+    $worker->onWorkerStart = function ($worker) use (&$async_process) {
+
+        $redis = $async_process['config'];
+        $queue = new \Workerman\RedisQueue\Client('redis://' . $redis['host'] . ':' . $redis['port'], ['auth' => $redis['password']]);
+
+        foreach ($async_process['client'] as $process_name => $config) {
+            $process_name = parse_name($process_name, 1);
+
+            Timer::add(1, function () use (&$queue, &$process_name, &$config) {
+                ${$process_name}            = new AsyncTcpConnection($config['listen'], $config['context'] ?? []);
+                ${$process_name}->transport = $config['transport'] ?? 'tcp';
+                $callback_map = [
+                    'onConnect',
+                    'onMessage',
+                    'onClose',
+                    'onError',
+                    'onBufferFull',
+                    'onBufferDrain'
+                ];
+                foreach ($callback_map as $name) {
+                    if (!in_array($name, $config['callback'] ?? [])) {
+                        continue;
+                    }
+                    if (!method_exists("\\App\\Callback\\Async{$process_name}\\{$name}", "init")) {
+                        CreateFile::create("\\App\\Callback\\Async{$process_name}\\{$name}", "Async");
+                    }
+                    ${$process_name}->$name = ["\\App\\Callback\\Async{$process_name}\\{$name}", "init"];
+                }
+                ${$process_name}->queue = $queue;
+                ${$process_name}->connect();
+            }, '', false);
+        }
+    };
 }
 
 Worker::runAll();

@@ -29,7 +29,7 @@ class CreateFile
             throw new Exception("File creation, parameter error");
         }
 
-        if (!in_array($type, ['WorkerMan', 'GatewayWorker'])) {
+        if (!in_array($type, ['WorkerMan', 'GatewayWorker', 'Async'])) {
             throw new Exception("File creation, parameter error");
         }
 
@@ -46,7 +46,7 @@ class CreateFile
                 }
             }
 
-            if ($file == 'onWorkerStart') {
+            if ($file == 'onWorkerStart' && in_array($type, ['WorkerMan', 'GatewayWorker'])) {
                 if (!is_dir(timer_path() . DS . $process)) {
                     mkdir(timer_path() . DS . $process, 0777, true);
                 }
@@ -55,7 +55,7 @@ class CreateFile
                 }
             }
 
-            if ($file == 'onMessage') {
+            if ($file == 'onMessage' && in_array($type, ['WorkerMan', 'GatewayWorker'])) {
                 if (!is_dir(message_path() . DS . $process)) {
                     mkdir(message_path() . DS . $process, 0777, true);
                 }

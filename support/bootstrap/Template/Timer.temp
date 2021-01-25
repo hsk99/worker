@@ -26,9 +26,10 @@ class Test
      * @method init
      *
      * @param  [type] $timer_id [定时器ID]
+     * @param  [type] $timer_id [进程实例]
      * @return [type]           [description]
      */
-    public static function init($timer_id)
+    public static function init($timer_id, $worker)
     {
         var_dump($timer_id);
     }

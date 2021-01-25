@@ -36,12 +36,16 @@ class Redis
                 continue;
             }
 
-            $connection = new Client();
+            try {
+                $connection = new Client();
 
-            $connection->connect($config['host'], $config['port']);
-            $connection->auth($config['password']);
+                $connection->connect($config['host'], $config['port']);
+                $connection->auth($config['password']);
 
-            self::$_connection[$name] = $connection;
+                self::$_connection[$name] = $connection;
+            } catch (\Throwable $th) {
+                throw new Exception($th->getMessage());
+            }
         }
     }
 
