@@ -3,6 +3,7 @@
 namespace App\Callback\{_process_};
 
 use GatewayWorker\Lib\Gateway;
+use support\bootstrap\Log;
 
 class onMessage
 {
@@ -11,8 +12,12 @@ class onMessage
         $message_data = json_decode($message, true);
         if (empty($message_data) || !is_array($message_data)) {
             Gateway::sendToClient($client_id, json(['type' => 'error', 'msg' => '非法操作，传输数据不是JSON格式']));
+
+            log::error('非法操作，传输数据不是JSON格式', ['message' => $message]);
             return;
         }
+
+        log::debug('<-----', ['message' => $message_data]);
 
         if (!empty($message_data['type']) && !is_array($message_data['type'])) {
             self::singleRequest($client_id, $message_data);
@@ -54,20 +59,24 @@ class onMessage
                 $check = ("\\App\\Message\\{_process_}\\Auth::check")($client_id, $message_data, $type, $module, $controller, $action);
                 if (!empty($check) && $check['code'] == 400) {
                     Gateway::sendToClient($client_id, json(['type' => 'error', 'msg' => $check['msg']]));
+
+                    log::debug('----->', ['message' => ['type' => 'error', 'msg' => $check['msg']]]);
                     return;
                 }
             }
             
-            $result = ("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")($client_id, $message_data);
-            if (empty($result)) {
+            $return = ("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")($client_id, $message_data);
+            if (empty($return)) {
                 return;
             }
         } else {
-            $result = ['code' => 400, 'msg' => '非法操作，方法不存在'];
+            $return = ['code' => 400, 'msg' => '非法操作，方法不存在'];
         }
-        $result['type'] = $type;
+        $return['type'] = $type;
 
-        Gateway::sendToClient($client_id, json($result));
+        Gateway::sendToClient($client_id, json($return));
+
+        log::debug('----->', ['message' => $return]);
     }
 
     protected static function multipleRequest($client_id, $message_data)
@@ -107,6 +116,8 @@ class onMessage
                     $check = ("\\App\\Message\\{_process_}\\Auth::check")($client_id, $data, $type, $module, $controller, $action);
                     if (!empty($check) && $check['code'] == 400) {
                         Gateway::sendToClient($client_id, json(['type' => 'error', 'msg' => $check['msg']]));
+
+                        log::debug('----->', ['message' => ['type' => 'error', 'msg' => $check['msg']]]);
                         return;
                     }
                 }
@@ -122,5 +133,7 @@ class onMessage
         }
 
         Gateway::sendToClient($client_id, json($return));
+
+        log::debug('----->', ['message' => $return]);
     }
 }

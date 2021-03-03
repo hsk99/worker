@@ -2,17 +2,21 @@
 
 namespace App\Callback;
 
+use \support\bootstrap\Log;
+
 class Events
 {
     protected static $worker_name;
 
     public static function onWorkerStart($businessWorker)
     {
+        self::$worker_name = parse_name($businessWorker->name, 1);
+
+        Log::start($businessWorker);
+        
         foreach (config('autoload.files', []) as $file) {
             include_once $file;
         }
-        
-        self::$worker_name = parse_name($businessWorker->name, 1);
 
         if (is_callable("\\App\\Callback\\" . self::$worker_name . "\\onWorkerStart::init")) {
             call_user_func("\\App\\Callback\\" . self::$worker_name . "\\onWorkerStart::init", $businessWorker);

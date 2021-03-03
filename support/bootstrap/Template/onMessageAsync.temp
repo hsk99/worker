@@ -2,10 +2,12 @@
 
 namespace App\Callback\{_process_};
 
+use support\bootstrap\Log;
+
 class onMessage
 {
     public static function init($connection, $message)
     {
-        
+        log::debug('<-----', ['connection_id' => $connection->id, 'message' => '']);
     }
 }

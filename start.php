@@ -12,7 +12,6 @@ require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/support/helpers.php';
 
 use Workerman\Worker;
-use Workerman\Lib\Timer;
 use Workerman\Protocols\Http;
 use Workerman\Protocols\Http\Session;
 use Workerman\Connection\TcpConnection;
@@ -22,6 +21,7 @@ use Workerman\Protocols\Http\Session\RedisSessionHandler;
 use GatewayWorker\Gateway;
 use GatewayWorker\Register;
 use GatewayWorker\BusinessWorker;
+use support\bootstrap\Log;
 use support\bootstrap\Config;
 use support\bootstrap\CreateFile;
 
@@ -43,11 +43,11 @@ Worker::$onMasterReload = function () {
     Config::reload(config_path());
 };
 
-$workerman_process      = config('workerman', []);
-$gateway_worker_process = config('gateway_worker', []);
-$global_data_process    = config('global_data', []);
-$channel_process        = config('channel', []);
-$async_process          = config('async', []);
+$workerman_process      = (array)config('workerman', []);
+$gateway_worker_process = (array)config('gateway_worker', []);
+$global_data_process    = (array)config('global_data', []);
+$channel_process        = (array)config('channel', []);
+$async_process          = (array)config('async', []);
 
 if (!empty($workerman_process) && !empty($gateway_worker_process)) {
     $worker_names = array_merge(array_keys($workerman_process), array_keys($gateway_worker_process));
@@ -76,6 +76,8 @@ if (!empty($workerman_process)) {
         }
         $worker->config = $config;
         $worker->onWorkerStart = function ($worker) {
+            Log::start($worker);
+
             foreach (config('autoload.files', []) as $file) {
                 include_once $file;
             }
@@ -213,36 +215,35 @@ if (!empty($async_process['client'])) {
     $worker->count = 1;
     $worker->name  = 'Async';
     $worker->onWorkerStart = function ($worker) use (&$async_process) {
+        Log::start($worker);
 
         $redis = $async_process['config'];
         $queue = new \Workerman\RedisQueue\Client('redis://' . $redis['host'] . ':' . $redis['port'], ['auth' => $redis['password']]);
 
         foreach ($async_process['client'] as $process_name => $config) {
-            $process_name = parse_name($process_name, 1);
+            $process_name = "Async" . parse_name($process_name, 1);
 
-            Timer::add(1, function () use (&$queue, &$process_name, &$config) {
-                ${$process_name}            = new AsyncTcpConnection($config['listen'], $config['context'] ?? []);
-                ${$process_name}->transport = $config['transport'] ?? 'tcp';
-                $callback_map = [
-                    'onConnect',
-                    'onMessage',
-                    'onClose',
-                    'onError',
-                    'onBufferFull',
-                    'onBufferDrain'
-                ];
-                foreach ($callback_map as $name) {
-                    if (!in_array($name, $config['callback'] ?? [])) {
-                        continue;
-                    }
-                    if (!method_exists("\\App\\Callback\\Async{$process_name}\\{$name}", "init")) {
-                        CreateFile::create("\\App\\Callback\\Async{$process_name}\\{$name}", "Async");
-                    }
-                    ${$process_name}->$name = ["\\App\\Callback\\Async{$process_name}\\{$name}", "init"];
+            ${$process_name}            = new AsyncTcpConnection($config['listen'], $config['context'] ?? []);
+            ${$process_name}->transport = $config['transport'] ?? 'tcp';
+            $callback_map = [
+                'onConnect',
+                'onMessage',
+                'onClose',
+                'onError',
+                'onBufferFull',
+                'onBufferDrain'
+            ];
+            foreach ($callback_map as $name) {
+                if (!in_array($name, $config['callback'] ?? [])) {
+                    continue;
                 }
-                ${$process_name}->queue = $queue;
-                ${$process_name}->connect();
-            }, '', false);
+                if (!method_exists("\\App\\Callback\\{$process_name}\\{$name}", "init")) {
+                    CreateFile::create("\\App\\Callback\\{$process_name}\\{$name}", "Async");
+                }
+                ${$process_name}->$name = ["\\App\\Callback\\{$process_name}\\{$name}", "init"];
+            }
+            ${$process_name}->queue = $queue;
+            ${$process_name}->connect();
         }
     };
 }
