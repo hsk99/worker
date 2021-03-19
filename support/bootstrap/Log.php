@@ -82,12 +82,12 @@ class Log
      * @Author    HSK
      * @DateTime  2021-02-23 14:16:32
      *
-     * @param [type] $name
-     * @param [type] $arguments
+     * @param string $name
+     * @param array $arguments
      *
      * @return void
      */
-    public static function __callStatic($name, $arguments)
+    public static function __callStatic(string $name, array $arguments)
     {
         return static::$_debug->{$name}(...$arguments);
     }

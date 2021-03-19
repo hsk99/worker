@@ -7,10 +7,12 @@ use \Monolog\Formatter\JsonFormatter;
 class DebugFormatter extends JsonFormatter
 {
     protected $worker;
+    protected $debug;
 
     public function __construct($worker)
     {
         $this->worker = $worker;
+        $this->debug  = config('app.debug') ?? false;
     }
 
     public function format(array $record): string
@@ -38,6 +40,10 @@ class DebugFormatter extends JsonFormatter
         $string .= "[ context ] {$context}\n";
         $string .= "[ extra ] {$extra}\n";
         $string .= "---------------------------------------------------------------\n";
+
+        if ($this->debug) {
+            echo $string;
+        }
 
         return $string;
     }

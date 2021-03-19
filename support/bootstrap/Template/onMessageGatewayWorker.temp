@@ -54,17 +54,17 @@ class onMessage
                 break;
         }
 
-        if (!empty($controller) && !empty($action) && is_callable("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")) {
-            if (is_callable("\\App\\Message\\{_process_}\\Auth::check")) {
-                $check = ("\\App\\Message\\{_process_}\\Auth::check")($client_id, $message_data, $type, $module, $controller, $action);
-                if (!empty($check) && $check['code'] == 400) {
-                    Gateway::sendToClient($client_id, json(['type' => 'error', 'msg' => $check['msg']]));
+        if (is_callable("\\App\\Message\\{_process_}\\Auth::check")) {
+            $check = ("\\App\\Message\\{_process_}\\Auth::check")($client_id, $message_data, $type, $module, $controller, $action);
+            if (!empty($check) && $check['code'] == 400) {
+                Gateway::sendToClient($client_id, json(['type' => 'error', 'msg' => $check['msg']]));
 
-                    log::debug('----->', ['message' => ['type' => 'error', 'msg' => $check['msg']]]);
-                    return;
-                }
+                log::debug('----->', ['message' => ['type' => 'error', 'msg' => $check['msg']]]);
+                return;
             }
-            
+        }
+
+        if (!empty($controller) && !empty($action) && is_callable("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")) {            
             $return = ("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")($client_id, $message_data);
             if (empty($return)) {
                 return;
@@ -111,17 +111,17 @@ class onMessage
                     break;
             }
 
-            if (!empty($controller) && !empty($action) && is_callable("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")) {
-                if (is_callable("\\App\\Message\\{_process_}\\Auth::check")) {
-                    $check = ("\\App\\Message\\{_process_}\\Auth::check")($client_id, $data, $type, $module, $controller, $action);
-                    if (!empty($check) && $check['code'] == 400) {
-                        Gateway::sendToClient($client_id, json(['type' => 'error', 'msg' => $check['msg']]));
+            if (is_callable("\\App\\Message\\{_process_}\\Auth::check")) {
+                $check = ("\\App\\Message\\{_process_}\\Auth::check")($client_id, $data, $type, $module, $controller, $action);
+                if (!empty($check) && $check['code'] == 400) {
+                    Gateway::sendToClient($client_id, json(['type' => 'error', 'msg' => $check['msg']]));
 
-                        log::debug('----->', ['message' => ['type' => 'error', 'msg' => $check['msg']]]);
-                        return;
-                    }
+                    log::debug('----->', ['message' => ['type' => 'error', 'msg' => $check['msg']]]);
+                    return;
                 }
-                
+            }
+
+            if (!empty($controller) && !empty($action) && is_callable("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")) {                
                 $result = ("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")($client_id, $data);
                 if (empty($result)) {
                     return;

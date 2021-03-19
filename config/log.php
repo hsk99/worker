@@ -6,7 +6,7 @@ return [
             [
                 'class' => Monolog\Handler\RotatingFileHandler::class,
                 'constructor' => [
-                    runtime_path() . '/logs/webman.log'
+                    runtime_path() . '/logs/worker.log'
                 ],
                 'formatter' => [
                     'class' => Monolog\Formatter\LineFormatter::class,

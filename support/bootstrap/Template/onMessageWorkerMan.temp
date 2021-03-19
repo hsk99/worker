@@ -103,17 +103,17 @@ class onMessage
                 break;
         }
 
-        if (!empty($controller) && !empty($action) && is_callable("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")) {
-            if (is_callable("\\App\\Message\\{_process_}\\Auth::check")) {
-                $check = ("\\App\\Message\\{_process_}\\Auth::check")($connection, $message_data, $type, $module, $controller, $action);
-                if (!empty($check) && $check['code'] == 400) {
-                    $connection->send(json(['type' => 'error', 'msg' => $check['msg']]));
+        if (is_callable("\\App\\Message\\{_process_}\\Auth::check")) {
+            $check = ("\\App\\Message\\{_process_}\\Auth::check")($connection, $message_data, $type, $module, $controller, $action);
+            if (!empty($check) && $check['code'] == 400) {
+                $connection->send(json(['type' => 'error', 'msg' => $check['msg']]));
 
-                    log::debug('--->', ['connection_id' => $connection->id, 'message' => ['type' => 'error', 'msg' => $check['msg']]]);
-                    return;
-                }
+                log::debug('--->', ['connection_id' => $connection->id, 'message' => ['type' => 'error', 'msg' => $check['msg']]]);
+                return;
             }
+        }
 
+        if (!empty($controller) && !empty($action) && is_callable("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")) {
             $return = ("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")($connection, $message_data);
             if (empty($return)) {
                 return;
@@ -160,17 +160,17 @@ class onMessage
                     break;
             }
 
-            if (!empty($controller) && !empty($action) && is_callable("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")) {
-                if (is_callable("\\App\\Message\\{_process_}\\Auth::check")) {
-                    $check = ("\\App\\Message\\{_process_}\\Auth::check")($connection, $data, $type, $module, $controller, $action);
-                    if (!empty($check) && $check['code'] == 400) {
-                        $connection->send(json(['type' => 'error', 'msg' => $check['msg']]));
+            if (is_callable("\\App\\Message\\{_process_}\\Auth::check")) {
+                $check = ("\\App\\Message\\{_process_}\\Auth::check")($connection, $data, $type, $module, $controller, $action);
+                if (!empty($check) && $check['code'] == 400) {
+                    $connection->send(json(['type' => 'error', 'msg' => $check['msg']]));
 
-                        log::debug('--->', ['connection_id' => $connection->id, 'message' => ['type' => 'error', 'msg' => $check['msg']]]);
-                        return;
-                    }
+                    log::debug('--->', ['connection_id' => $connection->id, 'message' => ['type' => 'error', 'msg' => $check['msg']]]);
+                    return;
                 }
+            }
 
+            if (!empty($controller) && !empty($action) && is_callable("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")) {
                 $result = ("\\App\\Message\\{_process_}{$module}\\{$controller}::{$action}")($connection, $data);
                 if (empty($result)) {
                     return;

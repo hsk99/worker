@@ -6,8 +6,6 @@ if (strpos(strtolower(PHP_OS), 'win') === 0) {
     exit("start.php not support windows\n");
 }
 
-date_default_timezone_set('Asia/Shanghai');
-
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/support/helpers.php';
 
@@ -31,13 +29,17 @@ load_files(bootstrap_path());
 load_files(extend_path());
 Config::load(config_path());
 
+$app = (array)config('app', []);
+
+date_default_timezone_set($app['defaultTimezone'] ?? 'Asia/Shanghai');
+
 if (!is_dir(runtime_path())) {
     mkdir(runtime_path(), 0777, true);
 }
-Worker::$logFile                      = runtime_path() . '/workerman.log';
-Worker::$pidFile                      = runtime_path() . '/workerman.pid';
-Worker::$stdoutFile                   = runtime_path() . '/stdout.log';
-TcpConnection::$defaultMaxPackageSize = 10 * 1024 * 1024;
+Worker::$logFile                      = $app['logFile'] ?? runtime_path() . '/workerman.log';
+Worker::$pidFile                      = $app['pidFile'] ?? runtime_path() . '/workerman.pid';
+Worker::$stdoutFile                   = $app['stdoutFile'] ?? runtime_path() . '/stdout.log';
+TcpConnection::$defaultMaxPackageSize = $app['defaultMaxPackageSize'] ?? 1024000;
 
 Worker::$onMasterReload = function () {
     Config::reload(config_path());
@@ -60,6 +62,8 @@ if (!empty($workerman_process)) {
     foreach ($workerman_process as $process_name => $config) {
         $process_name = parse_name($process_name, 1);
         $worker       = new Worker($config['listen'] ?? null, $config['context'] ?? []);
+        $worker->name = $process_name;
+
         $property_map = [
             'count',
             'user',
@@ -68,12 +72,12 @@ if (!empty($workerman_process)) {
             'reusePort',
             'transport',
         ];
-        $worker->name = $process_name;
         foreach ($property_map as $property) {
             if (isset($config[$property])) {
                 $worker->$property = $config[$property];
             }
         }
+
         $worker->config = $config;
         $worker->onWorkerStart = function ($worker) {
             Log::start($worker);
@@ -105,6 +109,7 @@ if (!empty($workerman_process)) {
                 call_user_func("\\App\\Callback\\{$worker->name}\\onWorkerStart::init", $worker);
             }
         };
+
         $callback_map = [
             'onWorkerReload',
             'onConnect',
@@ -144,7 +149,7 @@ if (!empty($gateway_worker_process)) {
             'onWorkerStop'
         ];
         foreach ($callback_map as $name) {
-            if (!in_array($name, $config['callback'] ?? []) || empty($config['business_count'])) {
+            if (!in_array($name, $config['callback'] ?? []) || empty($config['businessCount'])) {
                 continue;
             }
             if (!method_exists("\\App\\Callback\\{$process_name}\\{$name}", "init")) {
@@ -153,32 +158,61 @@ if (!empty($gateway_worker_process)) {
         }
 
         if (in_array('Register', $config['type'] ?? [])) {
-            $register                   = new Register("text://" . $config['register']);
-            $register->name             = $process_name;
+            $register             = new Register("text://" . $config['registerAddress']);
+            $register->name       = $process_name;
+            $register->secretKey  = $config['secretKey'] ?? '';
+            $register->reloadable = $config['reloadable'] ?? false;
         }
 
         if (in_array('Gateway', $config['type'] ?? [])) {
-            $gateway                    = new Gateway($config['listen'], $config['context'] ?? []);
-            $gateway->transport         = $config['transport'] ?? 'tcp';
-            $gateway->name              = $process_name;
-            $gateway->count             = $config['count'];
-            $gateway->lanIp             = $config['lan_ip'];
-            $gateway->startPort         = $config['start_port'];
-            $gateway->pingInterval      = $config['pinginterval'];
-            $gateway->pingData          = $config['pingdata'];
-            $gateway->registerAddress   = $config['register'];
+            $gateway        = new Gateway($config['listen'], $config['context'] ?? []);
+            $gateway->name  = $process_name;
+            $gateway->count = $config['gatewayCount'];
+
+            $property_map = [
+                'transport',
+                'lanIp',
+                'startPort',
+                'pingInterval',
+                'pingNotResponseLimit',
+                'pingData',
+                'registerAddress',
+                'secretKey',
+                'reloadable',
+                'router',
+                'sendToWorkerBufferSize',
+                'sendToClientBufferSize',
+                'protocolAccelerate',
+            ];
+            foreach ($property_map as $property) {
+                if (isset($config[$property])) {
+                    $gateway->$property = $config[$property];
+                }
+            }
         }
 
         if (in_array('BusinessWorker', $config['type'] ?? [])) {
-            $bussiness                  = new BusinessWorker();
-            $bussiness->name            = $process_name;
-            $bussiness->count           = $config['business_count'];
-            $bussiness->registerAddress = $config['register'];
-            $bussiness->eventHandler    = '\\App\\Callback\\Events';
+            $bussiness               = new BusinessWorker();
+            $bussiness->name         = $process_name;
+            $bussiness->count        = $config['businessCount'];
+            $bussiness->eventHandler = '\\App\\Callback\\Events';
+
+            $property_map = [
+                'registerAddress',
+                'processTimeout',
+                'processTimeoutHandler',
+                'secretKey',
+                'sendToGatewayBufferSize',
+            ];
+            foreach ($property_map as $property) {
+                if (isset($config[$property])) {
+                    $bussiness->$property = $config[$property];
+                }
+            }
         }
 
         if (!defined($process_name . "Register")) {
-            define($process_name . "Register", $config['register'] ?? '');
+            define($process_name . "Register", $config['registerAddress'] ?? '');
         }
     }
 }
@@ -225,6 +259,7 @@ if (!empty($async_process['client'])) {
 
             ${$process_name}            = new AsyncTcpConnection($config['listen'], $config['context'] ?? []);
             ${$process_name}->transport = $config['transport'] ?? 'tcp';
+
             $callback_map = [
                 'onConnect',
                 'onMessage',
@@ -242,6 +277,7 @@ if (!empty($async_process['client'])) {
                 }
                 ${$process_name}->$name = ["\\App\\Callback\\{$process_name}\\{$name}", "init"];
             }
+            
             ${$process_name}->queue = $queue;
             ${$process_name}->connect();
         }

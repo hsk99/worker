@@ -37,12 +37,11 @@ $str = "<?php \n";
 $str .= "\n";
 $str .= "ini_set('display_errors', 'on');\n";
 $str .= "\n";
-$str .= "date_default_timezone_set('Asia/Shanghai');\n";
-$str .= "\n";
 $str .= "require_once __DIR__ . '/../vendor/autoload.php';\n";
 $str .= "require_once __DIR__ . '/../support/helpers.php';\n";
 $str .= "\n";
 $str .= "use Workerman\Worker;\n";
+$str .= "use Workerman\Connection\TcpConnection;\n";
 $str .= "use support\bootstrap\Config;\n";
 $str .= "\n";
 $str .= "load_files(protocols_path());\n";
@@ -51,17 +50,22 @@ $str .= "load_files(bootstrap_path());\n";
 $str .= "load_files(extend_path());\n";
 $str .= "Config::load(config_path());\n";
 $str .= "\n";
+$str .= "\$app = (array)config('app', []);\n";
+$str .= "\n";
+$str .= "date_default_timezone_set(\$app['defaultTimezone'] ?? 'Asia/Shanghai');\n";
+$str .= "\n";
 $str .= "if (!is_dir(runtime_path())) {\n";
 $str .= "    mkdir(runtime_path(), 0777, true);\n";
 $str .= "}\n";
-$str .= "Worker::\$logFile                      = runtime_path(). '/workerman.log';\n";
-$str .= "Worker::\$pidFile                      = runtime_path(). '/workerman.pid';\n";
-$str .= "Worker::\$stdoutFile                   = runtime_path(). '/stdout.log';\n";
+$str .= "Worker::\$logFile                      = \$app['logFile'] ?? runtime_path() . '/workerman.log';\n";
+$str .= "Worker::\$pidFile                      = \$app['pidFile'] ?? runtime_path() . '/workerman.pid';\n";
+$str .= "Worker::\$stdoutFile                   = \$app['stdoutFile'] ?? runtime_path() . '/stdout.log';\n";
+$str .= "TcpConnection::\$defaultMaxPackageSize = \$app['defaultMaxPackageSize'] ?? 1024000;\n";
 $str .= "\n";
 if (!empty($gateway_worker_process)) {
     foreach ($gateway_worker_process as $process_name => $config) {
         $process_name = parse_name($process_name, 1);
-        $register     = $config['register'] ?? '';
+        $register     = $config['registerAddress'] ?? '';
 
         $str .= "if (!defined('{$process_name}Register')) {\n";
         $str .= "    define('{$process_name}Register', '{$register}');\n";
@@ -111,13 +115,11 @@ if (!empty($workerman_process)) {
         $str .= "use support\bootstrap\Log;\n";
         $str .= "use support\bootstrap\CreateFile;\n";
         $str .= "use Workerman\Worker;\n";
-        $str .= "use Workerman\Connection\TcpConnection;\n";
         $str .= "use Workerman\Protocols\Http;\n";
         $str .= "use Workerman\Protocols\Http\Session;\n";
         $str .= "use Workerman\Protocols\Http\Session\FileSessionHandler;\n";
         $str .= "use Workerman\Protocols\Http\Session\RedisSessionHandler;\n";
         $str .= "\n";
-        $str .= "TcpConnection::\$defaultMaxPackageSize = 10*1024*1024;\n";
         $str .= "\n";
         $str .= "\$worker                 = new Worker(\"" . $listen . "\");\n";
         $str .= "\$worker->name           = '$process_name';\n";
@@ -132,12 +134,12 @@ if (!empty($workerman_process)) {
         ];
         foreach ($property_map as $property => $parameter) {
             if (isset($config[$property])) {
-                $str .= $parameter . $config[$property] . ";\n";
+                $str .= $parameter . var_export($config[$property], true) . ";\n";
             }
         }
 
         $str .= "\$worker->config         = '" . serialize($config) . "';\n";
-        $str .= "\$worker->onWorkerStart = function (\$worker) {\n";
+        $str .= "\$worker->onWorkerStart  = function (\$worker) {\n";
         $str .= "    Log::start(\$worker);\n";
         $str .= "    foreach (config('autoload.files', []) as \$file) {\n";
         $str .= "        include_once \$file;\n";
@@ -218,7 +220,7 @@ if (!empty($gateway_worker_process)) {
             'onWorkerStop'
         ];
         foreach ($callback_map as $name) {
-            if (!in_array($name, $config['callback'] ?? []) || empty($config['business_count'])) {
+            if (!in_array($name, $config['callback'] ?? []) || empty($config['businessCount'])) {
                 continue;
             }
             if (!method_exists("\\App\\Callback\\{$process_name}\\{$name}", "init")) {
@@ -234,8 +236,19 @@ if (!empty($gateway_worker_process)) {
             $register .= "use Workerman\Worker;\n";
             $register .= "use GatewayWorker\Register;\n";
             $register .= "\n";
-            $register .= "\$register       = new Register(\"text://" . $config['register'] . "\");\n";
-            $register .= "\$register->name = '$process_name';\n";
+            $register .= "\$register             = new Register(\"text://" . $config['registerAddress'] . "\");\n";
+            $register .= "\$register->name       = '$process_name';\n";
+
+            $property_map = [
+                'secretKey'  => "\$register->secretKey  = ",
+                'reloadable' => "\$register->reloadable = ",
+            ];
+            foreach ($property_map as $property => $parameter) {
+                if (isset($config[$property])) {
+                    $register .= $parameter . var_export($config[$property], true) . ";\n";
+                }
+            }
+
             $register .= "\n";
             $register .= "Worker::runAll();\n";
 
@@ -254,15 +267,31 @@ if (!empty($gateway_worker_process)) {
             $gateway .= "use Workerman\Worker;\n";
             $gateway .= "use GatewayWorker\Gateway;\n";
             $gateway .= "\n";
-            $gateway .= "\$gateway                  = new Gateway(\"" . $listen . "\");\n";
-            $gateway .= "\$gateway->transport       = '$transport';\n";
-            $gateway .= "\$gateway->name            = '$process_name';\n";
-            $gateway .= "\$gateway->count           = " . $config['count'] . ";\n";
-            $gateway .= "\$gateway->lanIp           = '" . $config['lan_ip'] . "';\n";
-            $gateway .= "\$gateway->startPort       = '" . $config['start_port'] . "';\n";
-            $gateway .= "\$gateway->pingInterval    = '" . $config['pinginterval'] . "';\n";
-            $gateway .= "\$gateway->pingData        = '" . $config['pingdata'] . "';\n";
-            $gateway .= "\$gateway->registerAddress = '" . $config['register'] . "';\n";
+            $gateway .= "\$gateway                         = new Gateway(\"" . $listen . "\");\n";
+            $gateway .= "\$gateway->name                   = '$process_name';\n";
+            $gateway .= "\$gateway->count                  = " . $config['gatewayCount'] . ";\n";
+
+            $property_map = [
+                'transport'              => "\$gateway->transport              = ",
+                'lanIp'                  => "\$gateway->lanIp                  = ",
+                'startPort'              => "\$gateway->startPort              = ",
+                'pingInterval'           => "\$gateway->pingInterval           = ",
+                'pingNotResponseLimit'   => "\$gateway->pingNotResponseLimit   = ",
+                'pingData'               => "\$gateway->pingData               = ",
+                'registerAddress'        => "\$gateway->registerAddress        = ",
+                'secretKey'              => "\$gateway->secretKey              = ",
+                'reloadable'             => "\$gateway->reloadable             = ",
+                'router'                 => "\$gateway->router                 = ",
+                'sendToWorkerBufferSize' => "\$gateway->sendToWorkerBufferSize = ",
+                'sendToClientBufferSize' => "\$gateway->sendToClientBufferSize = ",
+                'protocolAccelerate'     => "\$gateway->protocolAccelerate     = ",
+            ];
+            foreach ($property_map as $property => $parameter) {
+                if (isset($config[$property])) {
+                    $gateway .= $parameter . var_export($config[$property], true) . ";\n";
+                }
+            }
+
             $gateway .= "\n";
             $gateway .= "Worker::runAll();\n";
 
@@ -281,11 +310,24 @@ if (!empty($gateway_worker_process)) {
             $bussiness .= "use Workerman\Worker;\n";
             $bussiness .= "use GatewayWorker\BusinessWorker;\n";
             $bussiness .= "\n";
-            $bussiness .= "\$bussiness                  = new BusinessWorker();\n";
-            $bussiness .= "\$bussiness->name            = '$process_name';\n";
-            $bussiness .= "\$bussiness->count           = " . $config['business_count'] . ";\n";
-            $bussiness .= "\$bussiness->registerAddress = '" . $config['register'] . "';\n";
-            $bussiness .= "\$bussiness->eventHandler    = '\\\\App\\\\Callback\\\\Events';\n";
+            $bussiness .= "\$bussiness                          = new BusinessWorker();\n";
+            $bussiness .= "\$bussiness->name                    = '$process_name';\n";
+            $bussiness .= "\$bussiness->count                   = " . $config['businessCount'] . ";\n";
+            $bussiness .= "\$bussiness->eventHandler            = '\\\\App\\\\Callback\\\\Events';\n";
+
+            $property_map = [
+                'registerAddress'         => "\$bussiness->registerAddress         = ",
+                'processTimeout'          => "\$bussiness->processTimeout          = ",
+                'processTimeoutHandler'   => "\$bussiness->processTimeoutHandler   = ",
+                'secretKey'               => "\$bussiness->secretKey               = ",
+                'sendToGatewayBufferSize' => "\$bussiness->sendToGatewayBufferSize = ",
+            ];
+            foreach ($property_map as $property => $parameter) {
+                if (isset($config[$property])) {
+                    $bussiness .= $parameter . var_export($config[$property], true) . ";\n";
+                }
+            }
+
             $bussiness .= "\n";
             $bussiness .= "Worker::runAll();\n";
 
