@@ -39,6 +39,7 @@ class CreateFile
             if (!is_dir(callback_path() . DS . $process)) {
                 mkdir(callback_path() . DS . $process, 0777, true);
             }
+
             if (!file_exists(callback_path() . DS . $process . DS . $file . ".php")) {
                 $ok = file_put_contents(callback_path() . DS . $process . DS . $file . ".php", self::Template($file . $type, $process));
                 if (!$ok) {
@@ -50,8 +51,17 @@ class CreateFile
                 if (!is_dir(timer_path() . DS . $process)) {
                     mkdir(timer_path() . DS . $process, 0777, true);
                 }
+
                 if (!file_exists(timer_path() . DS . $process . DS . "Test.php")) {
                     @file_put_contents(timer_path() . DS . $process . DS . "Test.php", self::Template("Timer", $process));
+                }
+
+                if (!is_dir(crontab_path() . DS . $process)) {
+                    mkdir(crontab_path() . DS . $process, 0777, true);
+                }
+
+                if (!file_exists(crontab_path() . DS . $process . DS . "Test.php")) {
+                    @file_put_contents(crontab_path() . DS . $process . DS . "Test.php", self::Template("Crontab", $process));
                 }
             }
 
@@ -59,6 +69,7 @@ class CreateFile
                 if (!is_dir(message_path() . DS . $process)) {
                     mkdir(message_path() . DS . $process, 0777, true);
                 }
+
                 if (!file_exists(message_path() . DS . $process . DS . "Index.php")) {
                     @file_put_contents(message_path() . DS . $process . DS . "Index.php", self::Template("Message" . $type, $process));
                 }
@@ -81,6 +92,7 @@ class CreateFile
         if (!is_dir(callback_path())) {
             mkdir(callback_path(), 0777, true);
         }
+
         if (!file_exists(callback_path() . DS . "Events.php")) {
             $ok = file_put_contents(callback_path() . DS . "Events.php", self::Template("Events"));
             if (!$ok) {

@@ -15,9 +15,25 @@ class Log
     /**
      * debug通道
      *
-     * @var [type]
+     * @var array
      */
-    protected static $_debug;
+    protected static $_debug = [];
+
+    /**
+     * debug日志单独存储
+     *
+     * @var array
+     */
+    protected static $_debugMethods = [
+        'debug'     => Logger::DEBUG,
+        'info'      => Logger::INFO,
+        'notice'    => Logger::NOTICE,
+        'warning'   => Logger::WARNING,
+        'error'     => Logger::ERROR,
+        'critical'  => Logger::CRITICAL,
+        'alert'     => Logger::ALERT,
+        'emergency' => Logger::EMERGENCY
+    ];
 
     /**
      * 自定义通道
@@ -40,11 +56,15 @@ class Log
     {
         // debug
         $worker_name = parse_name($worker->name, 1);
-        $logger      = static::$_debug = new Logger($worker_name . '_debug');
-        $handler     = new \Monolog\Handler\RotatingFileHandler(runtime_path() . '/debug/' . $worker_name . '/debug.log');
+        $logger      = new Logger($worker_name . '_debug');
         $formatter   = new \support\bootstrap\LogFormatter\DebugFormatter($worker);
-        $handler->setFormatter($formatter);
-        $logger->pushHandler($handler);
+        foreach (self::$_debugMethods as $method => $level) {
+            $handler = new \Monolog\Handler\RotatingFileHandler(runtime_path() . "/debug/{$worker_name}/{$method}.log", 0, $level, false);
+            $handler->setFormatter($formatter);
+            $logger->pushHandler($handler);
+
+            static::$_debug[$method] = $logger;
+        }
 
         // 自定义
         $configs = config('log', []);
@@ -89,6 +109,10 @@ class Log
      */
     public static function __callStatic(string $name, array $arguments)
     {
-        return static::$_debug->{$name}(...$arguments);
+        if (static::$_debug[$name]) {
+            return static::$_debug[$name]->{$name}(...$arguments);
+        } else {
+            return false;
+        }
     }
 }

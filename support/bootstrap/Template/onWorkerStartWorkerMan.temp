@@ -4,7 +4,7 @@ namespace App\Callback\{_process_};
 
 use support\bootstrap\Db;
 use support\bootstrap\Redis;
-use support\bootstrap\LoadTimer;
+use support\bootstrap\Load;
 
 class onWorkerStart
 {
@@ -12,6 +12,7 @@ class onWorkerStart
     {
         Db::connect();
         Redis::connect();
-        LoadTimer::load($worker);
+        Load::timer($worker);
+        Load::crontab($worker);
     }
 }

@@ -46,13 +46,23 @@ function message_path()
 }
 
 /**
- * @method 定时任务目录
+ * @method 定时器目录
  *
  * @return [type]     [description]
  */
 function timer_path()
 {
     return BASE_PATH . DS . 'App' . DS . 'Timer';
+}
+
+/**
+ * @method 定时任务目录
+ *
+ * @return [type]     [description]
+ */
+function crontab_path()
+{
+    return BASE_PATH . DS . 'App' . DS . 'Crontab';
 }
 
 /**
