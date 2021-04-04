@@ -4,7 +4,6 @@ return [
     'register' => [
         'type'            => ['Register'],
         'registerAddress' => '127.0.0.1:13010',
-        'reloadable'      => true,
         'secretKey'       => 'hsk99',
     ],
     'event' => [
