@@ -8,7 +8,7 @@ use Workerman\Protocols\Http\Response;
  * Workerman Http协议数据输出
  *
  * @Author    HSK
- * @DateTime  2020-10-22 17:22:33
+ * @DateTime  2021-05-17 22:58:51
  */
 class HttpReturn
 {
@@ -16,15 +16,15 @@ class HttpReturn
      * 返回任意响应
      *
      * @Author    HSK
-     * @DateTime  2020-10-22 17:23:10
+     * @DateTime  2021-05-17 23:06:14
      *
      * @param string $body
-     * @param int $status
+     * @param integer $status
      * @param array $headers
      *
-     * @return void
+     * @return object
      */
-    public static function response($body = '', $status = 200, $headers = array())
+    public static function response(string $body = '', int $status = 200, array $headers = array()): object
     {
         return new Response($status, $headers, $body);
     }
@@ -33,14 +33,14 @@ class HttpReturn
      * 返回JSON
      *
      * @Author    HSK
-     * @DateTime  2020-10-22 17:23:20
+     * @DateTime  2021-05-17 23:05:51
      *
-     * @param [type] $data
+     * @param mixed $data
      * @param [type] $options
      *
-     * @return void
+     * @return object
      */
-    public static function json($data, $options = JSON_UNESCAPED_UNICODE)
+    public static function json(mixed $data, $options = JSON_UNESCAPED_UNICODE): object
     {
         return new Response(200, ['Content-Type' => 'application/json'], json_encode($data, $options));
     }
@@ -49,15 +49,15 @@ class HttpReturn
      * 返回XML
      *
      * @Author    HSK
-     * @DateTime  2020-10-22 17:23:27
+     * @DateTime  2021-05-17 23:04:06
      *
-     * @param [type] $xml
+     * @param string $xml
      *
-     * @return void
+     * @return object
      */
-    public static function xml($xml)
+    public static function xml(string $xml): object
     {
-        if ($xml instanceof SimpleXMLElement) {
+        if ($xml instanceof \SimpleXMLElement) {
             $xml = $xml->asXML();
         }
         return new Response(200, ['Content-Type' => 'text/xml'], $xml);
@@ -67,14 +67,14 @@ class HttpReturn
      * 返回JSONP
      *
      * @Author    HSK
-     * @DateTime  2020-10-22 17:23:33
+     * @DateTime  2021-05-17 23:00:25
      *
-     * @param [type] $data
+     * @param mixed $data
      * @param string $callback_name
      *
-     * @return void
+     * @return object
      */
-    public static function jsonp($data, $callback_name = 'callback')
+    public static function jsonp(mixed $data, $callback_name = 'callback'): object
     {
         if (!is_scalar($data) && null !== $data) {
             $data = json_encode($data);
@@ -86,15 +86,15 @@ class HttpReturn
      * 重定向
      *
      * @Author    HSK
-     * @DateTime  2020-10-22 17:23:39
+     * @DateTime  2021-05-17 23:00:01
      *
-     * @param [type] $location
-     * @param int $status
+     * @param string $location
+     * @param integer $status
      * @param array $headers
      *
-     * @return void
+     * @return object
      */
-    public static function redirect($location, $status = 302, $headers = [])
+    public static function redirect(string $location, int $status = 302, array $headers = []): object
     {
         $response = new Response($status, ['Location' => $location]);
         if (!empty($headers)) {

@@ -2,6 +2,12 @@
 
 namespace support\bootstrap;
 
+/**
+ * 配置
+ *
+ * @Author    HSK
+ * @DateTime  2021-05-17 22:38:04
+ */
 class Config
 {
     /**
@@ -12,17 +18,17 @@ class Config
     protected static $_config = [];
 
     /**
-     * 记录
+     * 加载
      *
      * @Author    HSK
-     * @DateTime  2020-10-22 17:20:17
+     * @DateTime  2021-05-17 22:39:32
      *
-     * @param [type] $config_path
+     * @param string $config_path
      * @param array $exclude_file
      *
      * @return void
      */
-    public static function load($config_path, $exclude_file = [])
+    public static function load(string $config_path, array $exclude_file = [])
     {
         foreach (\glob($config_path . '/*.php') as $file) {
             $basename = \basename($file, '.php');
@@ -35,17 +41,17 @@ class Config
     }
 
     /**
-     * 读取
+     * 获取
      *
      * @Author    HSK
-     * @DateTime  2020-10-22 17:20:24
+     * @DateTime  2021-05-17 22:43:20
      *
-     * @param [type] $key
-     * @param [type] $default
+     * @param string $key
+     * @param mixed $default
      *
-     * @return void
+     * @return mixed
      */
-    public static function get($key = null, $default = null)
+    public static function get(string $key = null, $default = null)
     {
         if ($key === null) {
             return static::$_config;
@@ -62,17 +68,17 @@ class Config
     }
 
     /**
-     * 刷新
+     * 重载
      *
      * @Author    HSK
-     * @DateTime  2020-10-22 17:20:30
+     * @DateTime  2021-05-17 22:44:53
      *
-     * @param [type] $config_path
+     * @param string $config_path
      * @param array $exclude_file
      *
      * @return void
      */
-    public static function reload($config_path, $exclude_file = [])
+    public static function reload(string $config_path, array $exclude_file = [])
     {
         static::$_config = [];
         static::load($config_path, $exclude_file);

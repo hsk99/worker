@@ -1,7 +1,6 @@
 <?php
 
 require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/support/helpers.php';
 
 use support\bootstrap\Config;
 use support\bootstrap\CreateFile;
@@ -38,7 +37,6 @@ $str .= "\n";
 $str .= "ini_set('display_errors', 'on');\n";
 $str .= "\n";
 $str .= "require_once __DIR__ . '/../vendor/autoload.php';\n";
-$str .= "require_once __DIR__ . '/../support/helpers.php';\n";
 $str .= "\n";
 $str .= "use Workerman\Worker;\n";
 $str .= "use Workerman\Connection\TcpConnection;\n";
@@ -394,9 +392,9 @@ if (!empty($async_process['client'])) {
     $str .= "require_once __DIR__ . '/loader.php';\n";
     $str .= "\n";
     $str .= "use support\bootstrap\Log;\n";
-    $str .= "use support\bootstrap\CreateFile;\n";
     $str .= "use Workerman\Worker;\n";
     $str .= "use Workerman\Connection\AsyncTcpConnection;\n";
+    $str .= "use Workerman\Connection\AsyncUdpConnection;\n";
     $str .= "\n";
     $str .= "\$worker        = new Worker();\n";
     $str .= "\$worker->count = 1;\n";
@@ -412,8 +410,17 @@ if (!empty($async_process['client'])) {
         $context   = $config['context'] ?? "[]";
         $transport = $config['transport'] ?? 'tcp';
 
-        $str .= "    \${$process_name}                = new AsyncTcpConnection('{$config['listen']}', {$context});\n";
-        $str .= "    \${$process_name}->transport     = '{$transport}';\n";
+        $str .= "    list(\$scheme, \$address) = explode(':', \"" . $config['listen'] . "\", 2);\n";
+        $str .= "    \n";
+        $str .= "    if (\$scheme === 'udp') {\n";
+        $str .= "        \${$process_name} = new AsyncUdpConnection(\"" . $config['listen'] . "\", {$context});\n";
+        $str .= "    } else {\n";
+        $str .= "        \${$process_name} = new AsyncTcpConnection(\"" . $config['listen'] . "\", {$context});\n";
+        $str .= "    \n";
+        if (isset($transport)) {
+            $str .= "            \${$process_name}->transport = \"" . $transport . "\";\n";
+        }
+        $str .= "    }\n";
 
         $callback_map = [
             'onConnect'      => "\${$process_name}->onConnect     = ",

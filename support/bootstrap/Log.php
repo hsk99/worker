@@ -8,19 +8,19 @@ use Monolog\Logger;
  * 日志
  *
  * @Author    HSK
- * @DateTime  2021-02-23 14:14:12
+ * @DateTime  2021-05-17 22:50:58
  */
 class Log
 {
     /**
-     * debug通道
+     * debug 通道
      *
      * @var array
      */
     protected static $_debug = [];
 
     /**
-     * debug日志单独存储
+     * debug 日志单独存储
      *
      * @var array
      */
@@ -46,13 +46,13 @@ class Log
      * 开启通道
      *
      * @Author    HSK
-     * @DateTime  2021-02-23 14:15:24
+     * @DateTime  2021-05-17 22:52:21
      *
-     * @param [type] $worker
+     * @param object $worker
      *
      * @return void
      */
-    public static function start($worker)
+    public static function start(object $worker)
     {
         // debug
         $worker_name = parse_name($worker->name, 1);
@@ -85,13 +85,13 @@ class Log
      * 获取通道实例
      *
      * @Author    HSK
-     * @DateTime  2021-02-23 14:16:09
+     * @DateTime  2021-05-17 22:52:48
      *
      * @param string $name
      *
-     * @return void
+     * @return object
      */
-    public static function channel($name = 'default')
+    public static function channel(string $name = 'default'): object
     {
         return static::$_instance[$name] ?? null;
     }
@@ -100,12 +100,12 @@ class Log
      * 使用debug通道
      *
      * @Author    HSK
-     * @DateTime  2021-02-23 14:16:32
+     * @DateTime  2021-05-17 22:53:42
      *
      * @param string $name
      * @param array $arguments
      *
-     * @return void
+     * @return mixed
      */
     public static function __callStatic(string $name, array $arguments)
     {

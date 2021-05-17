@@ -2,6 +2,12 @@
 
 namespace support\bootstrap;
 
+/**
+ * 验证器
+ *
+ * @Author    HSK
+ * @DateTime  2021-05-17 22:58:24
+ */
 class Validate
 {
     // 实例

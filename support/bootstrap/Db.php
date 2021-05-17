@@ -5,18 +5,28 @@ namespace support\bootstrap;
 use Exception;
 use Workerman\MySQL\Connection;
 
+/**
+ * 数据库
+ *
+ * @Author    HSK
+ * @DateTime  2021-05-17 22:48:03
+ */
 class Db
 {
     /**
-     * MySql连接信息
+     * MySql 连接信息
+     *
      * @var array
      */
     protected static $_connection = [];
 
     /**
-     * @method 连接数据库
+     * 连接数据库
      *
-     * @return [type]           [description]
+     * @Author    HSK
+     * @DateTime  2021-05-17 22:49:21
+     *
+     * @return void
      */
     public static function connect()
     {
@@ -42,12 +52,16 @@ class Db
     }
 
     /**
-     * @method 获取MySql连接信息
+     * 获取MySql连接信息
      *
-     * @param  string $db_name [description]
-     * @return [type]          [description]
+     * @Author    HSK
+     * @DateTime  2021-05-17 22:50:02
+     *
+     * @param string $db_name
+     *
+     * @return object
      */
-    public static function get($db_name = '')
+    public static function get(string $db_name): object
     {
         if (empty($db_name)) {
             throw new Exception("Parameter error");

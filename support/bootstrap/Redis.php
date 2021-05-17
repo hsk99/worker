@@ -5,10 +5,16 @@ namespace support\bootstrap;
 use Exception;
 use Predis\Client;
 
+/**
+ * Redis
+ *
+ * @Author    HSK
+ * @DateTime  2021-05-17 22:57:09
+ */
 class Redis
 {
     /**
-     * Redis连接信息
+     * Redis 连接信息
      *
      * @var array
      */
@@ -18,7 +24,7 @@ class Redis
      * 连接Redis
      *
      * @Author    HSK
-     * @DateTime  2020-10-22 16:35:10
+     * @DateTime  2021-05-17 22:57:31
      *
      * @return void
      */
@@ -53,13 +59,13 @@ class Redis
      * 获取Redis连接信息
      *
      * @Author    HSK
-     * @DateTime  2020-10-22 16:35:19
+     * @DateTime  2021-05-17 22:58:02
      *
      * @param string $redis_name
      *
-     * @return void
+     * @return object
      */
-    public static function get($redis_name = '')
+    public static function get(string $redis_name = ''): object
     {
         if (empty($redis_name)) {
             throw new Exception("Parameter error");

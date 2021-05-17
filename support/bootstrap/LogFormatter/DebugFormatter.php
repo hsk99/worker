@@ -9,7 +9,7 @@ class DebugFormatter extends JsonFormatter
     protected $worker;
     protected $debug;
 
-    public function __construct($worker)
+    public function __construct(object $worker)
     {
         $this->worker = $worker;
         $this->debug  = config('app.debug') ?? false;

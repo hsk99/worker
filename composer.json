@@ -8,6 +8,11 @@
             "email": "3024186605@qq.com"
         }
     ],
+    "autoload": {
+        "files": [
+            "support/helpers.php"
+        ]
+    },
     "require": {
         "php": ">=7.0",
         "workerman/workerman": "^4.0",

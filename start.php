@@ -7,13 +7,13 @@ if (strpos(strtolower(PHP_OS), 'win') === 0) {
 }
 
 require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/support/helpers.php';
 
 use Workerman\Worker;
 use Workerman\Protocols\Http;
 use Workerman\Protocols\Http\Session;
 use Workerman\Connection\TcpConnection;
 use Workerman\Connection\AsyncTcpConnection;
+use Workerman\Connection\AsyncUdpConnection;
 use Workerman\Protocols\Http\Session\FileSessionHandler;
 use Workerman\Protocols\Http\Session\RedisSessionHandler;
 use GatewayWorker\Gateway;
@@ -257,8 +257,17 @@ if (!empty($async_process['client'])) {
         foreach ($async_process['client'] as $process_name => $config) {
             $process_name = "Async" . parse_name($process_name, 1);
 
-            ${$process_name}            = new AsyncTcpConnection($config['listen'], $config['context'] ?? []);
-            ${$process_name}->transport = $config['transport'] ?? 'tcp';
+            list($scheme, $address) = \explode(':', $config['listen'], 2);
+
+            if ($scheme === 'udp') {
+                ${$process_name} = new AsyncUdpConnection($config['listen'], $config['context'] ?? []);
+            } else {
+                ${$process_name} = new AsyncTcpConnection($config['listen'], $config['context'] ?? []);
+
+                if (isset($config['transport'])) {
+                    ${$process_name}->transport = $config['transport'];
+                }
+            }
 
             $callback_map = [
                 'onConnect',
@@ -277,7 +286,7 @@ if (!empty($async_process['client'])) {
                 }
                 ${$process_name}->$name = ["\\App\\Callback\\{$process_name}\\{$name}", "init"];
             }
-            
+
             ${$process_name}->queue = $queue;
             ${$process_name}->connect();
         }

@@ -8,7 +8,7 @@ use support\bootstrap\Redis;
  * 队列
  *
  * @Author    HSK
- * @DateTime  2020-11-05 23:13:18
+ * @DateTime  2021-05-17 22:54:12
  */
 class Queue
 {
@@ -26,16 +26,16 @@ class Queue
      * 入列
      *
      * @Author    HSK
-     * @DateTime  2020-11-05 22:30:40
+     * @DateTime  2021-05-17 22:55:30
      *
-     * @param [type] $redis_name
-     * @param [type] $queue
-     * @param [type] $data
-     * @param int $delay
+     * @param string $redis_name
+     * @param string $queue
+     * @param mixed $data
+     * @param integer $delay
      *
-     * @return void
+     * @return boolean
      */
-    public static function enter($redis_name, $queue, $data, $delay = 0)
+    public static function enter(string $redis_name, string $queue, mixed $data, int $delay = 0): bool
     {
         try {
             $redis = Redis::get($redis_name);
@@ -65,14 +65,14 @@ class Queue
      * 出列
      *
      * @Author    HSK
-     * @DateTime  2020-11-05 22:37:19
+     * @DateTime  2021-05-17 22:56:27
      *
-     * @param [type] $redis_name
-     * @param [type] $queue
+     * @param string $redis_name
+     * @param string $queue
      *
-     * @return void
+     * @return mixed
      */
-    public static function out($redis_name, $queue)
+    public static function out(string $redis_name, string $queue)
     {
         try {
             $redis = Redis::get($redis_name);

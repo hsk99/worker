@@ -8,6 +8,6 @@ class onMessage
 {
     public static function init($connection, $message)
     {
-        log::debug('<-----', ['connection_id' => $connection->id, 'message' => '']);
+        log::debug('<-----', ['connection_id' => $connection->id ?? "", 'message' => '']);
     }
 }

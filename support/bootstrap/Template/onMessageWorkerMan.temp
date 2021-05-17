@@ -8,18 +8,18 @@ class onMessage
 {
     public static function init($connection, $message)
     {
-        if (in_array($connection->worker->protocol, ["\Workerman\Protocols\Http", "Workerman\Protocols\Http"])) {
+        if (!empty($connection->worker) && in_array($connection->worker->protocol, ["\Workerman\Protocols\Http", "Workerman\Protocols\Http"])) {
             self::httpRequest($connection, $message);
         } else {
             $message_data = json_decode($message, true);
             if (empty($message_data) || !is_array($message_data)) {
                 $connection->send(json(['type' => 'error', 'msg' => '非法操作，传输数据不是JSON格式']));
 
-                log::error('非法操作，传输数据不是JSON格式', ['connection_id' => $connection->id, 'message' => $message]);
+                log::error('非法操作，传输数据不是JSON格式', ['connection_id' => $connection->id ?? "", 'message' => $message]);
                 return;
             }
 
-            log::debug('<---', ['connection_id' => $connection->id, 'message' => $message_data]);
+            log::debug('<---', ['connection_id' => $connection->id ?? "", 'message' => $message_data]);
 
             if (!empty($message_data['type']) && !is_array($message_data['type'])) {
                 self::singleRequest($connection, $message_data);
@@ -108,7 +108,7 @@ class onMessage
             if (!empty($check) && $check['code'] == 400) {
                 $connection->send(json(['type' => 'error', 'msg' => $check['msg']]));
 
-                log::debug('--->', ['connection_id' => $connection->id, 'message' => ['type' => 'error', 'msg' => $check['msg']]]);
+                log::debug('--->', ['connection_id' => $connection->id ?? "", 'message' => ['type' => 'error', 'msg' => $check['msg']]]);
                 return;
             }
         }
@@ -125,7 +125,7 @@ class onMessage
 
         $connection->send(json($return));
 
-        log::debug('--->', ['connection_id' => $connection->id, 'message' => $return]);
+        log::debug('--->', ['connection_id' => $connection->id ?? "", 'message' => $return]);
     }
 
     protected static function multipleRequest($connection, $message_data)
@@ -165,7 +165,7 @@ class onMessage
                 if (!empty($check) && $check['code'] == 400) {
                     $connection->send(json(['type' => 'error', 'msg' => $check['msg']]));
 
-                    log::debug('--->', ['connection_id' => $connection->id, 'message' => ['type' => 'error', 'msg' => $check['msg']]]);
+                    log::debug('--->', ['connection_id' => $connection->id ?? "", 'message' => ['type' => 'error', 'msg' => $check['msg']]]);
                     return;
                 }
             }
@@ -183,6 +183,6 @@ class onMessage
 
         $connection->send(json($return));
 
-        log::debug('--->', ['connection_id' => $connection->id, 'message' => $return]);
+        log::debug('--->', ['connection_id' => $connection->id ?? "", 'message' => $return]);
     }
 }

@@ -6,122 +6,159 @@ define('BASE_PATH', realpath(__DIR__ . '/../'));
 define('DS', DIRECTORY_SEPARATOR);
 
 /**
- * @method 项目目录
+ * 项目目录
  *
- * @return [type]    [description]
+ * @Author    HSK
+ * @DateTime  2021-05-10 16:38:44
+ *
+ * @return string
  */
-function base_path()
+function base_path(): string
 {
     return BASE_PATH;
 }
 
 /**
- * @method 业务目录
+ * 业务目录
  *
- * @return [type]        [description]
+ * @Author    HSK
+ * @DateTime  2021-05-10 16:38:44
+ *
+ * @return string
  */
-function app_path()
+function app_path(): string
 {
     return BASE_PATH . DS . 'App';
 }
 
 /**
- * @method 回调函数目录
+ * 回调函数目录
  *
- * @return [type]        [description]
+ * @Author    HSK
+ * @DateTime  2021-05-10 16:38:44
+ *
+ * @return string
  */
-function callback_path()
+function callback_path(): string
 {
     return BASE_PATH . DS . 'App' . DS . 'Callback';
 }
 
 /**
- * @method 接收数据处理目录
+ * 接收数据处理目录
  *
- * @return [type]       [description]
+ * @Author    HSK
+ * @DateTime  2021-05-10 16:38:44
+ *
+ * @return string
  */
-function message_path()
+function message_path(): string
 {
     return BASE_PATH . DS . 'App' . DS . 'Message';
 }
 
 /**
- * @method 定时器目录
+ * 定时器目录
  *
- * @return [type]     [description]
+ * @Author    HSK
+ * @DateTime  2021-05-10 16:38:44
+ *
+ * @return string
  */
-function timer_path()
+function timer_path(): string
 {
     return BASE_PATH . DS . 'App' . DS . 'Timer';
 }
 
 /**
- * @method 定时任务目录
+ * 定时任务目录
  *
- * @return [type]     [description]
+ * @Author    HSK
+ * @DateTime  2021-05-10 16:38:44
+ *
+ * @return string
  */
-function crontab_path()
+function crontab_path(): string
 {
     return BASE_PATH . DS . 'App' . DS . 'Crontab';
 }
 
 /**
- * @method 配置文件目录
+ * 配置文件目录
  *
- * @return [type]      [description]
+ * @Author    HSK
+ * @DateTime  2021-05-10 16:38:44
+ *
+ * @return string
  */
-function config_path()
+function config_path(): string
 {
     return BASE_PATH . DS . 'config';
 }
 
 /**
- * @method 引导文件目录
+ * 引导文件目录
  *
- * @return [type]      [description]
+ * @Author    HSK
+ * @DateTime  2021-05-10 16:38:44
+ *
+ * @return string
  */
-function bootstrap_path()
+function bootstrap_path(): string
 {
     return BASE_PATH . DS . 'support' . DS . 'bootstrap';
 }
 
 /**
- * @method 拓展文件目录
+ * 拓展文件目录
  *
- * @return [type]      [description]
+ * @Author    HSK
+ * @DateTime  2021-05-10 16:38:44
+ *
+ * @return string
  */
-function extend_path()
+function extend_path(): string
 {
     return BASE_PATH . DS . 'support' . DS . 'extend';
 }
 
 /**
- * @method 日志缓存目录
+ * 日志缓存目录
  *
- * @return [type]       [description]
+ * @Author    HSK
+ * @DateTime  2021-05-10 16:38:44
+ *
+ * @return string
  */
-function runtime_path()
+function runtime_path(): string
 {
     return BASE_PATH . DS . 'runtime';
 }
 
 /**
- * @method 自定义协议目录
+ * 自定义协议目录
  *
- * @return [type]       [description]
+ * @Author    HSK
+ * @DateTime  2021-05-10 16:38:44
+ *
+ * @return string
  */
-function protocols_path()
+function protocols_path(): string
 {
     return BASE_PATH . DS . 'Protocols';
 }
 
 /**
- * @method 加载文件
+ * 加载文件
  *
- * @param  string $path [description]
- * @return [type]       [description]
+ * @Author    HSK
+ * @DateTime  2021-05-10 16:40:28
+ *
+ * @param string $path
+ *
+ * @return void
  */
-function load_files($path = '')
+function load_files(string $path)
 {
     if (empty($path) || !is_dir($path)) {
         return;
@@ -140,26 +177,34 @@ function load_files($path = '')
 }
 
 /**
- * @method 数据转JSON
- *  
- * @param  [type] $data [description]
- * @return [type]       [description]
+ * 数据转JSON
+ *
+ * @Author    HSK
+ * @DateTime  2021-05-10 16:41:44
+ *
+ * @param array|object|string $data
+ *
+ * @return string
  */
-function json($data)
+function json($data): string
 {
     return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 }
 
 /**
- * @method 字符串命名风格转换
+ * 字符串命名风格转换
  * type 0 将 Java 风格转换为 C 的风格 1 将 C 风格转换为 Java 的风格
  *
- * @param  [type]     $name    [字符串]
- * @param  integer    $type    [转换类型]
- * @param  boolean    $ucfirst [首字母是否大写（驼峰规则）]
- * @return [type]              [description]
+ * @Author    HSK
+ * @DateTime  2021-05-10 16:42:50
+ *
+ * @param string $name
+ * @param integer $type
+ * @param boolean $ucfirst
+ *
+ * @return string
  */
-function parse_name($name, $type = 0, $ucfirst = true)
+function parse_name(string $name, int $type = 0, bool $ucfirst = true): string
 {
     if ($type) {
         $name = preg_replace_callback('/_([a-zA-Z])/', function ($match) {
@@ -173,11 +218,15 @@ function parse_name($name, $type = 0, $ucfirst = true)
 }
 
 /**
- * @method 获取配置参数
- *  
- * @param  [type] $key     [description]
- * @param  [type] $default [description]
- * @return [type]          [description]
+ * 获取配置参数
+ *
+ * @Author    HSK
+ * @DateTime  2021-05-10 16:48:26
+ *
+ * @param null $key
+ * @param null $default
+ *
+ * @return mixed
  */
 function config($key = null, $default = null)
 {
@@ -185,12 +234,16 @@ function config($key = null, $default = null)
 }
 
 /**
- * @method 循环删除目录和文件
+ * 循环删除目录和文件
  *
- * @param  [type]          $dir_name [description]
- * @return [type]                    [description]
+ * @Author    HSK
+ * @DateTime  2021-05-10 16:51:11
+ *
+ * @param string $dir_name
+ *
+ * @return boolean
  */
-function delete_dir_file($dir_name)
+function delete_dir_file(string $dir_name): bool
 {
     $result = false;
     if (is_dir($dir_name)) {
@@ -215,17 +268,22 @@ function delete_dir_file($dir_name)
 }
 
 /**
- * @method 获取CPU个数
- *  
- * @return [type]    [description]
+ * 获取CPU个数
+ *
+ * @Author    HSK
+ * @DateTime  2021-05-10 16:51:24
+ *
+ * @return integer
  */
-function cpu_count()
+function cpu_count(): int
 {
     if (strtolower(PHP_OS) === 'darwin') {
         $count = shell_exec('sysctl -n machdep.cpu.core_count');
     } else {
         $count = shell_exec('nproc');
     }
+
     $count = (int)$count > 0 ? (int)$count : 4;
+
     return $count;
 }

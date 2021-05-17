@@ -8,7 +8,7 @@ use Exception;
  * 文件生成
  *
  * @Author    HSK
- * @DateTime  2020-10-15 14:49:20
+ * @DateTime  2021-05-17 22:45:26
  */
 class CreateFile
 {
@@ -16,14 +16,14 @@ class CreateFile
      * 按照模版创建文件
      *
      * @Author    HSK
-     * @DateTime  2020-10-15 14:44:59
+     * @DateTime  2021-05-17 22:46:09
      *
      * @param string $namespace
      * @param string $type
      *
      * @return void
      */
-    public static function create($namespace = '', $type = '')
+    public static function create(string $namespace, string $type)
     {
         if (empty($namespace) || empty($type)) {
             throw new Exception("File creation, parameter error");
@@ -83,7 +83,7 @@ class CreateFile
      * 创建 GatewayWorker 业务处理类
      *
      * @Author    HSK
-     * @DateTime  2020-10-15 14:44:43
+     * @DateTime  2021-05-17 22:46:57
      *
      * @return void
      */
@@ -107,14 +107,14 @@ class CreateFile
      * 获取模版文件内容
      *
      * @Author    HSK
-     * @DateTime  2020-11-01 16:26:39
+     * @DateTime  2021-05-17 22:47:40
      *
      * @param string $temp
      * @param string $process
      *
-     * @return void
+     * @return string
      */
-    protected static function Template($temp, $process = '')
+    protected static function Template(string $temp, string $process = ''): string
     {
         $str = file_get_contents(__DIR__ . "/Template/{$temp}.temp");
 
