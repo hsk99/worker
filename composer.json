@@ -1,33 +1,29 @@
 {
     "name": "hsk99/worker",
     "type": "project",
+    "homepage": "http://hsk99.com.cn",
     "license": "MIT",
     "authors": [
         {
-            "name": "HSK",
-            "email": "3024186605@qq.com"
+            "name": "hsk99",
+            "email": "3024186605@qq.com",
+            "homepage": "http://hsk99.com.cn"
         }
     ],
+    "require": {
+        "php": ">=7.2",
+        "workerman/gateway-worker": "^3.0",
+        "monolog/monolog": "^2.3",
+        "illuminate/redis": "^7.0",
+        "topthink/think-orm": "^2.0"
+    },
     "autoload": {
         "files": [
-            "support/helpers.php"
-        ]
-    },
-    "require": {
-        "php": ">=7.0",
-        "workerman/workerman": "^4.0",
-        "workerman/gateway-worker": "^3.0",
-        "workerman/gatewayclient": "^3.0",
-        "workerman/mysql": "^1.0",
-        "workerman/globaldata": "^1.0",
-        "workerman/channel": "^1.0",
-        "workerman/http-client": "^0.1",
-        "workerman/redis": "^1.0",
-        "workerman/crontab": "^1.0",
-        "workerman/redis-queue": "^1.0",
-        "monolog/monolog": "^2.0",
-        "firebase/php-jwt": "^5.2",
-        "predis/predis": "^1.1",
-        "phpseclib/phpseclib": "^2.0"
+            "./support/helpers.php"
+        ],
+        "psr-4": {
+            "support\\": "support",
+            "app\\": "app"
+        }
     }
 }

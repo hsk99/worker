@@ -2,71 +2,39 @@
 
 namespace support\bootstrap;
 
+use support\base\BootstrapInterface;
+use Workerman\Worker;
+use GatewayWorker\BusinessWorker;
 use Monolog\Logger;
 
 /**
- * 日志
+ * Class Log
+ * @package support
  *
- * @Author    HSK
- * @DateTime  2021-05-17 22:50:58
+ * @method static void log($level, $message, array $context = [])
+ * @method static void debug($message, array $context = [])
+ * @method static void info($message, array $context = [])
+ * @method static void notice($message, array $context = [])
+ * @method static void warning($message, array $context = [])
+ * @method static void error($message, array $context = [])
+ * @method static void critical($message, array $context = [])
+ * @method static void alert($message, array $context = [])
+ * @method static void emergency($message, array $context = [])
  */
-class Log
+class Log implements BootstrapInterface
 {
-    /**
-     * debug 通道
-     *
-     * @var array
-     */
-    protected static $_debug = [];
 
     /**
-     * debug 日志单独存储
-     *
-     * @var array
-     */
-    protected static $_debugMethods = [
-        'debug'     => Logger::DEBUG,
-        'info'      => Logger::INFO,
-        'notice'    => Logger::NOTICE,
-        'warning'   => Logger::WARNING,
-        'error'     => Logger::ERROR,
-        'critical'  => Logger::CRITICAL,
-        'alert'     => Logger::ALERT,
-        'emergency' => Logger::EMERGENCY
-    ];
-
-    /**
-     * 自定义通道
-     *
      * @var array
      */
     protected static $_instance = [];
 
     /**
-     * 开启通道
-     *
-     * @Author    HSK
-     * @DateTime  2021-05-17 22:52:21
-     *
-     * @param object $worker
-     *
+     * @param Worker|BusinessWorker $worker
      * @return void
      */
-    public static function start(object $worker)
+    public static function start($worker)
     {
-        // debug
-        $worker_name = parse_name($worker->name, 1);
-        $logger      = new Logger($worker_name . '_debug');
-        $formatter   = new \support\bootstrap\LogFormatter\DebugFormatter($worker);
-        foreach (self::$_debugMethods as $method => $level) {
-            $handler = new \Monolog\Handler\RotatingFileHandler(runtime_path() . "/debug/{$worker_name}/{$method}.log", 0, $level, false);
-            $handler->setFormatter($formatter);
-            $logger->pushHandler($handler);
-
-            static::$_debug[$method] = $logger;
-        }
-
-        // 自定义
         $configs = config('log', []);
         foreach ($configs as $channel => $config) {
             $logger = static::$_instance[$channel] = new Logger($channel);
@@ -82,37 +50,22 @@ class Log
     }
 
     /**
-     * 获取通道实例
-     *
-     * @Author    HSK
-     * @DateTime  2021-05-17 22:52:48
-     *
      * @param string $name
-     *
-     * @return object
+     * @return Logger;
      */
-    public static function channel(string $name = 'default'): object
+    public static function channel($name = 'default')
     {
         return static::$_instance[$name] ?? null;
     }
 
+
     /**
-     * 使用debug通道
-     *
-     * @Author    HSK
-     * @DateTime  2021-05-17 22:53:42
-     *
-     * @param string $name
-     * @param array $arguments
-     *
+     * @param $name
+     * @param $arguments
      * @return mixed
      */
-    public static function __callStatic(string $name, array $arguments)
+    public static function __callStatic($name, $arguments)
     {
-        if (static::$_debug[$name]) {
-            return static::$_debug[$name]->{$name}(...$arguments);
-        } else {
-            return false;
-        }
+        return static::channel('default')->{$name}(...$arguments);
     }
 }

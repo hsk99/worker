@@ -1,10 +1,10 @@
 <?php
 
 return [
-	'redis' => [
-		"connect"  => false,
-		"host"     => '127.0.0.1',
-		"port"     => '6379',
-		"password" => 'hsk99',
-	]
+    'default' => [
+        'host'     => '127.0.0.1',
+        'password' => 'hsk99',
+        'port'     => 6379,
+        'database' => 0,
+    ],
 ];

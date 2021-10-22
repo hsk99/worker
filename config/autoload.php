@@ -2,6 +2,6 @@
 
 return [
     'files' => [
-        // base_path() . '/App/functions.php'
+        // base_path() . '/app/functions.php'
     ]
 ];
